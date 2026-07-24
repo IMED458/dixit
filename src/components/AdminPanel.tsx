@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Shield, Plus, Sparkles, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { Card, Language } from '../types';
 import { t } from '../i18n';
+import { DEFAULT_CARDS } from '../data/defaultCards';
 
 interface AdminPanelProps {
   language: Language;
@@ -25,18 +26,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ language, onClose }) => 
   }, []);
 
   const fetchCards = async () => {
-    setLoadingCards(true);
-    try {
-      const res = await fetch('/api/cards');
-      if (res.ok) {
-        const data = await res.json();
-        setCards(data);
-      }
-    } catch (err) {
-      console.warn('Failed to load cards', err);
-    } finally {
-      setLoadingCards(false);
-    }
+    // Serverless build: the curated deck ships with the client.
+    setCards(DEFAULT_CARDS);
+    setLoadingCards(false);
   };
 
   const handleAddCustomCard = () => {

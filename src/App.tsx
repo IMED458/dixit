@@ -22,6 +22,7 @@ import {
   ServerToClientMessage
 } from './types';
 import { soundEffects } from './utils/soundEffects';
+import { DixitClient } from './net/client';
 
 export default function App() {
   const [language, setLanguage] = useState<Language>(() => {
@@ -38,90 +39,43 @@ export default function App() {
   const [showRulesModal, setShowRulesModal] = useState<boolean>(false);
   const [showAdminPanel, setShowAdminPanel] = useState<boolean>(false);
 
-  const wsRef = useRef<WebSocket | null>(null);
+  const clientRef = useRef<DixitClient | null>(null);
 
   const handleLanguageChange = (lang: Language) => {
     setLanguage(lang);
     localStorage.setItem('dreamclue_lang', lang);
   };
 
-  // WebSocket Connection Lifecycle
+  // Firestore-backed connection lifecycle.
   useEffect(() => {
-    let ws: WebSocket;
-    let reconnectTimeout: NodeJS.Timeout;
-
-    const connectWs = () => {
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${window.location.host}`;
-      ws = new WebSocket(wsUrl);
-      wsRef.current = ws;
-
-      ws.onopen = () => {
-        setIsConnected(true);
-        // Attempt automatic reconnection if token exists
-        const storedToken = localStorage.getItem('dreamclue_token');
-        if (storedToken) {
-          sendAction({ type: 'RECONNECT', reconnectToken: storedToken });
+    const client = new DixitClient({
+      onRoomUpdate: (state, myState) => {
+        setRoomState(state);
+        setMyState(myState);
+      },
+      onChat: (message) => setChatMessages((prev) => [...prev.slice(-90), message]),
+      onReaction: (reaction) => {
+        setReactions((prev) => [...prev, reaction]);
+        setTimeout(() => setReactions((prev) => prev.filter((r) => r.id !== reaction.id)), 3000);
+      },
+      onReconnectSuccess: (token) => localStorage.setItem('dreamclue_token', token),
+      onError: (msg) => {
+        setErrorMessage(msg);
+        setTimeout(() => setErrorMessage(null), 4000);
+      },
+      onConnected: (connected) => {
+        setIsConnected(connected);
+        if (connected && localStorage.getItem('dreamclue_room')) {
+          client.send({ type: 'RECONNECT', reconnectToken: localStorage.getItem('dreamclue_token') || '' });
         }
-      };
-
-      ws.onmessage = (event) => {
-        try {
-          const msg: ServerToClientMessage = JSON.parse(event.data);
-          switch (msg.type) {
-            case 'ROOM_UPDATE':
-              setRoomState(msg.state);
-              setMyState(msg.myState);
-              break;
-
-            case 'CHAT_MESSAGE':
-              setChatMessages((prev) => [...prev.slice(-90), msg.message]);
-              break;
-
-            case 'REACTION_EVENT':
-              setReactions((prev) => [...prev, msg.reaction]);
-              setTimeout(() => {
-                setReactions((prev) => prev.filter((r) => r.id !== msg.reaction.id));
-              }, 3000);
-              break;
-
-            case 'RECONNECT_SUCCESS':
-              localStorage.setItem('dreamclue_token', msg.reconnectToken);
-              break;
-
-            case 'ERROR':
-              setErrorMessage(msg.message);
-              setTimeout(() => setErrorMessage(null), 4000);
-              break;
-          }
-        } catch (err) {
-          console.error('Error parsing WS message:', err);
-        }
-      };
-
-      ws.onclose = () => {
-        setIsConnected(false);
-        // Attempt reconnect after 2 seconds
-        reconnectTimeout = setTimeout(connectWs, 2000);
-      };
-
-      ws.onerror = (err) => {
-        console.warn('WS error:', err);
-      };
-    };
-
-    connectWs();
-
-    return () => {
-      if (ws) ws.close();
-      if (reconnectTimeout) clearTimeout(reconnectTimeout);
-    };
+      },
+    });
+    clientRef.current = client;
+    return () => { client.destroy(); };
   }, []);
 
   const sendAction = (action: ClientToServerAction) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify(action));
-    }
+    clientRef.current?.send(action);
   };
 
   // Room Actions

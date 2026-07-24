@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CardSubmission, CardVote, RoundScoreDetail } from '../src/types';
+import { CardSubmission, CardVote, RoundScoreDetail } from '../types';
 
 export interface PlayerProfile {
   id: string;
@@ -18,20 +18,13 @@ export function calculateRoundScores(
   votes: CardVote[],
   players: PlayerProfile[]
 ): RoundScoreDetail[] {
-  // Map cardId -> owner playerId
   const cardOwnerMap = new Map<string, string>();
-  submissions.forEach((sub) => {
-    cardOwnerMap.set(sub.cardId, sub.playerId);
-  });
+  submissions.forEach((sub) => { cardOwnerMap.set(sub.cardId, sub.playerId); });
 
-  // Find storyteller's card
   const storytellerSub = submissions.find((s) => s.playerId === storytellerId);
   const storytellerCardId = storytellerSub ? storytellerSub.cardId : null;
 
-  // Votes cast for storyteller's card by non-storytellers
-  const correctVoters = votes.filter(
-    (v) => v.voterId !== storytellerId && v.cardId === storytellerCardId
-  );
+  const correctVoters = votes.filter((v) => v.voterId !== storytellerId && v.cardId === storytellerCardId);
 
   const nonStorytellers = players.filter((p) => p.id !== storytellerId);
   const totalNonStorytellersCount = nonStorytellers.length;
@@ -40,8 +33,7 @@ export function calculateRoundScores(
   const everyoneGuessed = totalNonStorytellersCount > 0 && correctCount === totalNonStorytellersCount;
   const nobodyGuessed = correctCount === 0;
 
-  // Map to track who voted for which player's submitted card
-  const votesReceivedByPlayer = new Map<string, string[]>(); // playerId -> array of voter displayNames
+  const votesReceivedByPlayer = new Map<string, string[]>();
   players.forEach((p) => votesReceivedByPlayer.set(p.id, []));
 
   votes.forEach((v) => {
@@ -55,7 +47,7 @@ export function calculateRoundScores(
     }
   });
 
-  const results: RoundScoreDetail[] = players.map((player) => {
+  return players.map((player) => {
     const isStoryteller = player.id === storytellerId;
     const mySub = submissions.find((s) => s.playerId === player.id);
     const myVote = votes.find((v) => v.voterId === player.id);
@@ -65,20 +57,14 @@ export function calculateRoundScores(
     let bonusVotePoints = 0;
 
     if (isStoryteller) {
-      if (!everyoneGuessed && !nobodyGuessed) {
-        storytellerPoints = 3;
-      }
+      if (!everyoneGuessed && !nobodyGuessed) storytellerPoints = 3;
     } else {
       if (everyoneGuessed || nobodyGuessed) {
-        correctGuessPoints = 2; // Default rule when all or none guess
+        correctGuessPoints = 2;
       } else {
         const guessedRight = myVote && myVote.cardId === storytellerCardId;
-        if (guessedRight) {
-          correctGuessPoints = 3;
-        }
+        if (guessedRight) correctGuessPoints = 3;
       }
-
-      // Bonus points for tricking other players with your card
       const votersForMe = votesReceivedByPlayer.get(player.id) || [];
       bonusVotePoints = votersForMe.length;
     }
@@ -98,9 +84,7 @@ export function calculateRoundScores(
       bonusVotePoints,
       totalRoundPoints,
       newTotalScore,
-      votersWhoVotedForMyCard: votesReceivedByPlayer.get(player.id) || []
+      votersWhoVotedForMyCard: votesReceivedByPlayer.get(player.id) || [],
     };
   });
-
-  return results;
 }

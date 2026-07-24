@@ -46,18 +46,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
   }, []);
 
   const fetchPublicRooms = async () => {
-    setLoadingRooms(true);
-    try {
-      const res = await fetch('/api/rooms');
-      if (res.ok) {
-        const data = await res.json();
-        setPublicRooms(data);
-      }
-    } catch (err) {
-      console.warn('Failed to fetch rooms', err);
-    } finally {
-      setLoadingRooms(false);
-    }
+    // Serverless build: no public-room directory. Players join by code.
+    setPublicRooms([]);
+    setLoadingRooms(false);
   };
 
   const handleSaveProfile = (name: string, avatar: string) => {

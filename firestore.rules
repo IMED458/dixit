@@ -1,0 +1,48 @@
+rules_version = '2';
+
+// Dixit / DreamClue — host-authoritative model. The room's hostPlayerId is the
+// only writer of authoritative state (room doc, full state, per-player views).
+// Any signed-in (anonymous) player may read the public room, read ONLY their
+// own private view, submit actions, and post chat/reactions. Hands and deck
+// live in host-only documents.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function hostOf(code) {
+      return signedIn() &&
+        request.auth.uid == get(/databases/$(database)/documents/rooms/$(code)).data.hostPlayerId;
+    }
+
+    match /rooms/{code} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.hostPlayerId == request.auth.uid;
+      allow update, delete: if signedIn() && resource.data.hostPlayerId == request.auth.uid;
+
+      match /state/{docId} {
+        allow read, write: if hostOf(code);
+      }
+
+      match /views/{uid} {
+        allow read: if signedIn() && (request.auth.uid == uid || hostOf(code));
+        allow write: if hostOf(code);
+      }
+
+      match /actions/{actionId} {
+        allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+        allow read, delete: if hostOf(code);
+      }
+
+      match /chat/{msgId} {
+        allow read: if signedIn();
+        allow create: if signedIn() &&
+          (request.resource.data.playerId == request.auth.uid || hostOf(code));
+      }
+
+      match /reactions/{reactionId} {
+        allow read: if signedIn();
+        allow create: if signedIn() && request.resource.data.playerId == request.auth.uid;
+      }
+    }
+  }
+}

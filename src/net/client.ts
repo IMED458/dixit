@@ -15,7 +15,7 @@
  */
 import {
   addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query,
-  runTransaction, serverTimestamp, setDoc, Firestore, Unsubscribe,
+  serverTimestamp, setDoc, Firestore, Unsubscribe,
 } from 'firebase/firestore';
 import { Auth, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { db as defaultDb, auth as defaultAuth } from '../firebase';
@@ -130,7 +130,7 @@ export class DixitClient {
     if (!already && (pub.players || []).length >= pub.settings.maxPlayers) return this.cb.onError('ოთახი სავსეა (Room is full)');
     this.teardown();
     this.code = code;
-    await this.optimisticJoin(code, pub, displayName, avatarUrl).catch(() => {});
+    this.optimisticJoin(pub, displayName, avatarUrl);
     this.subscribe(code);
     await this.sendAction('JOIN', { displayName, avatarUrl });
     await this.maybeBecomeHost(pub.hostPlayerId);
@@ -217,7 +217,7 @@ export class DixitClient {
     await addDoc(this.reactionsCol(), clean(r));
   }
 
-  private async optimisticJoin(code: string, pub: any, displayName: string, avatarUrl: string) {
+  private optimisticJoin(pub: any, displayName: string, avatarUrl: string) {
     const optimisticPlayer: Player = {
       id: this.uid,
       displayName: displayName || `მოთამაშე ${(pub.players || []).length + 1}`,
@@ -244,40 +244,6 @@ export class DixitClient {
     this.lastPublic = {
       ...(pub as PublicGameState),
       players: (pub.players || []).some((p: Player) => p.id === this.uid)
-        ? (pub.players || []).map((p: Player) => p.id === this.uid ? { ...p, isConnected: true } : p)
-        : [...(pub.players || []), optimisticPlayer],
-    };
-    this.lastPrivate = privateView;
-    this.emitRoom();
-
-    await runTransaction(this.db, async (tx) => {
-      const ref = this.roomRef(code);
-      const snap = await tx.get(ref);
-      if (!snap.exists() || (snap.data() as any)._deleted) return;
-      const latest = snap.data() as any;
-      const players = latest.players || [];
-      const existing = players.find((p: Player) => p.id === this.uid);
-      if (existing) {
-        existing.isConnected = true;
-        existing.displayName = displayName || existing.displayName;
-        existing.avatarUrl = avatarUrl || existing.avatarUrl;
-      } else {
-        if (players.length >= latest.settings.maxPlayers) return;
-        players.push({ ...optimisticPlayer, isSpectator: latest.phase !== 'LOBBY', seatNumber: players.length + 1 });
-      }
-      tx.update(ref, {
-        players,
-        memberUids: players.map((p: Player) => p.id),
-        updatedAt: Date.now(),
-      });
-    });
-
-    await setDoc(this.viewRef(this.uid, code), clean(privateView), { merge: true });
-    const alreadyLocal = (pub.players || []).some((p: Player) => p.id === this.uid);
-    if (!alreadyLocal) this.optimisticPlayer = null;
-    this.lastPublic = {
-      ...(pub as PublicGameState),
-      players: alreadyLocal
         ? (pub.players || []).map((p: Player) => p.id === this.uid ? { ...p, isConnected: true } : p)
         : [...(pub.players || []), optimisticPlayer],
     };

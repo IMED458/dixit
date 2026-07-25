@@ -77,6 +77,8 @@ export const i18n = {
     // Results & Scoring
     roundResultsTitle: 'რაუნდის შედეგები',
     storytellerCardWas: 'მთხრობელის ნამდვილი ბარათი იყო:',
+    storytellerCardLabel: 'მთხრობელის კარტი',
+    enlarge: 'გადიდება',
     scoreBreakdown: 'ქულების გადანაწილება',
     correctGuess: 'გამოიცნო მთხრობელის ბარათი (+3)',
     allOrNoneGuessed: 'ყველამ ან არავინ გამოიცნო (სხვებს +2, მთხრობელს 0)',
@@ -220,6 +222,8 @@ export const i18n = {
     // Results & Scoring
     roundResultsTitle: 'Round Results',
     storytellerCardWas: "The Storyteller's card was:",
+    storytellerCardLabel: "Storyteller's card",
+    enlarge: 'Enlarge',
     scoreBreakdown: 'Score Breakdown',
     correctGuess: 'Guessed Storyteller card (+3)',
     allOrNoneGuessed: 'Everyone or no one guessed (Storyteller 0, others +2)',

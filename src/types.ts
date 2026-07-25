@@ -135,6 +135,9 @@ export interface PublicGameState {
     thumbnailUrl: string;
     position: number;
   }>;
+  // Revealed only once the round is scored, so the storyteller's card can be
+  // highlighted in the results.
+  storytellerCardId?: string | null;
   submissionsCount: number;
   targetSubmissionsCount: number;
   votesCount: number;

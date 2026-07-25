@@ -398,6 +398,7 @@ export class DixitRoom {
       phase: d.phase, roundNumber: d.roundNumber, storytellerPlayerId: d.storytellerPlayerId,
       clue: d.clue, players: d.players, settings: d.settings,
       revealedCards: revealed,
+      storytellerCardId: (d.phase === 'SCORING' || d.phase === 'ROUND_RESULTS') ? d.storytellerCardId : null,
       submissionsCount: d.submissions.length,
       targetSubmissionsCount: this.activePlayers().length,
       votesCount: d.votes.length,

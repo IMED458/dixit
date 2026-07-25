@@ -5,14 +5,1535 @@
 
 import { Card } from '../types';
 
-// A large, diverse card library spanning many different subjects and moods so
-// that every player's hand shows a varied mix (not a single artist or theme).
-// Images are served from picsum.photos using a stable per-card seed, which makes
-// each card render a consistent, reliably-loading photo. The game engine samples
-// GAME_DECK_SIZE cards from this pool for each game.
+// A mixed card library: thought-provoking Georgian paintings (Niko Pirosmani,
+// served via Wikimedia's Special:FilePath which resolves by file name so the
+// image loads reliably regardless of storage hash) blended with a set of
+// varied, reliably-loading photos so every hand shows different, evocative
+// imagery. The game engine samples GAME_DECK_SIZE cards from this pool.
 export const DEFAULT_CARDS: Card[] = [
   {
-    "id": "card_001",
+    "id": "art_001",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%90%E1%83%91%E1%83%A0%E1%83%90%2C_%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%90%E1%83%91%E1%83%A0%E1%83%90%2C_%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_002",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%90%E1%83%95%E1%83%A2%E1%83%9D%E1%83%9E%E1%83%9D%E1%83%A0%E1%83%A2%E1%83%A0%E1%83%94%E1%83%A2%E1%83%98%2C_%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%90%E1%83%95%E1%83%A2%E1%83%9D%E1%83%9E%E1%83%9D%E1%83%A0%E1%83%A2%E1%83%A0%E1%83%94%E1%83%A2%E1%83%98%2C_%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_003",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%90%E1%83%AE%E1%83%90%E1%83%9A%E1%83%92%E1%83%90%E1%83%96%E1%83%A0%E1%83%93%E1%83%90_%E1%83%9B%E1%83%94%E1%83%97%E1%83%94%E1%83%95%E1%83%96%E1%83%94._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%90%E1%83%AE%E1%83%90%E1%83%9A%E1%83%92%E1%83%90%E1%83%96%E1%83%A0%E1%83%93%E1%83%90_%E1%83%9B%E1%83%94%E1%83%97%E1%83%94%E1%83%95%E1%83%96%E1%83%94._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_004",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%92%E1%83%9D%E1%83%92%E1%83%9D%E1%83%9C%E1%83%90_%E1%83%91%E1%83%90%E1%83%A2%E1%83%98%E1%83%97_%E1%83%93%E1%83%90_%E1%83%91%E1%83%90%E1%83%A2%E1%83%98%E1%83%A1_%E1%83%AD%E1%83%A3%E1%83%99%E1%83%94%E1%83%91%E1%83%98%E1%83%97%2C_%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%92%E1%83%9D%E1%83%92%E1%83%9D%E1%83%9C%E1%83%90_%E1%83%91%E1%83%90%E1%83%A2%E1%83%98%E1%83%97_%E1%83%93%E1%83%90_%E1%83%91%E1%83%90%E1%83%A2%E1%83%98%E1%83%A1_%E1%83%AD%E1%83%A3%E1%83%99%E1%83%94%E1%83%91%E1%83%98%E1%83%97%2C_%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_005",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%93%E1%83%90%E1%83%97%E1%83%95%E1%83%98._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%93%E1%83%90%E1%83%97%E1%83%95%E1%83%98._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_006",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%97%E1%83%90%E1%83%95%E1%83%90%E1%83%93%E1%83%98_%E1%83%A7%E1%83%90%E1%83%9C%E1%83%AC%E1%83%98%E1%83%97_%28%E1%83%9B%E1%83%94%E1%83%9A%E1%83%98%E1%83%A2%E1%83%9D%E1%83%9C_%E1%83%A9%E1%83%AE%E1%83%94%E1%83%98%E1%83%AB%E1%83%98%E1%83%A1_%E1%83%9E%E1%83%9D%E1%83%A0%E1%83%A2%E1%83%A0%E1%83%94%E1%83%A2%E1%83%98%29._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98._1906.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%97%E1%83%90%E1%83%95%E1%83%90%E1%83%93%E1%83%98_%E1%83%A7%E1%83%90%E1%83%9C%E1%83%AC%E1%83%98%E1%83%97_%28%E1%83%9B%E1%83%94%E1%83%9A%E1%83%98%E1%83%A2%E1%83%9D%E1%83%9C_%E1%83%A9%E1%83%AE%E1%83%94%E1%83%98%E1%83%AB%E1%83%98%E1%83%A1_%E1%83%9E%E1%83%9D%E1%83%A0%E1%83%A2%E1%83%A0%E1%83%94%E1%83%A2%E1%83%98%29._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98._1906.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_007",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%99%E1%83%90%E1%83%AA%E1%83%98_%E1%83%A7%E1%83%90%E1%83%9C%E1%83%AC%E1%83%98%E1%83%97._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%99%E1%83%90%E1%83%AA%E1%83%98_%E1%83%A7%E1%83%90%E1%83%9C%E1%83%AC%E1%83%98%E1%83%97._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_008",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%9C%E1%83%90%E1%83%91%E1%83%93%E1%83%98%E1%83%90%E1%83%9C%E1%83%98_%E1%83%99%E1%83%90%E1%83%AA%E1%83%98_%E1%83%AE%E1%83%90%E1%83%A0%E1%83%97%E1%83%90%E1%83%9C._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%9C%E1%83%90%E1%83%91%E1%83%93%E1%83%98%E1%83%90%E1%83%9C%E1%83%98_%E1%83%99%E1%83%90%E1%83%AA%E1%83%98_%E1%83%AE%E1%83%90%E1%83%A0%E1%83%97%E1%83%90%E1%83%9C._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_009",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%9C%E1%83%90%E1%83%A2%E1%83%A3%E1%83%A0%E1%83%9B%E1%83%9D%E1%83%A0%E1%83%A2%E1%83%98._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%9C%E1%83%90%E1%83%A2%E1%83%A3%E1%83%A0%E1%83%9B%E1%83%9D%E1%83%A0%E1%83%A2%E1%83%98._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_010",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98._%E1%83%A7%E1%83%A3%E1%83%A0%E1%83%AB%E1%83%9C%E1%83%98%E1%83%A1_%E1%83%99%E1%83%A0%E1%83%94%E1%83%A4%E1%83%90.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98._%E1%83%A7%E1%83%A3%E1%83%A0%E1%83%AB%E1%83%9C%E1%83%98%E1%83%A1_%E1%83%99%E1%83%A0%E1%83%94%E1%83%A4%E1%83%90.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_011",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98_-_%E1%83%93%E1%83%90%E1%83%AD%E1%83%A0%E1%83%98%E1%83%9A%E1%83%98_%E1%83%AF%E1%83%90%E1%83%A0%E1%83%98%E1%83%A1%E1%83%99%E1%83%90%E1%83%AA%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98_-_%E1%83%93%E1%83%90%E1%83%AD%E1%83%A0%E1%83%98%E1%83%9A%E1%83%98_%E1%83%AF%E1%83%90%E1%83%A0%E1%83%98%E1%83%A1%E1%83%99%E1%83%90%E1%83%AA%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_012",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%A5%E1%83%90%E1%83%9A%E1%83%98_%E1%83%A1%E1%83%90%E1%83%90%E1%83%A6%E1%83%93%E1%83%92%E1%83%9D%E1%83%9B%E1%83%9D_%E1%83%99%E1%83%95%E1%83%94%E1%83%A0%E1%83%AA%E1%83%AE%E1%83%94%E1%83%91%E1%83%98%E1%83%97%2C_%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%A5%E1%83%90%E1%83%9A%E1%83%98_%E1%83%A1%E1%83%90%E1%83%90%E1%83%A6%E1%83%93%E1%83%92%E1%83%9D%E1%83%9B%E1%83%9D_%E1%83%99%E1%83%95%E1%83%94%E1%83%A0%E1%83%AA%E1%83%AE%E1%83%94%E1%83%91%E1%83%98%E1%83%97%2C_%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_013",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%A8%E1%83%95%E1%83%94%E1%83%9A%E1%83%98_%E1%83%9C%E1%83%A3%E1%83%99%E1%83%A0%E1%83%98%E1%83%97_%E1%83%AC%E1%83%A7%E1%83%90%E1%83%9A%E1%83%96%E1%83%94%2C_%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%A8%E1%83%95%E1%83%94%E1%83%9A%E1%83%98_%E1%83%9C%E1%83%A3%E1%83%99%E1%83%A0%E1%83%98%E1%83%97_%E1%83%AC%E1%83%A7%E1%83%90%E1%83%9A%E1%83%96%E1%83%94%2C_%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_014",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%A8%E1%83%9D%E1%83%97%E1%83%90_%E1%83%A0%E1%83%A3%E1%83%A1%E1%83%97%E1%83%90%E1%83%95%E1%83%94%E1%83%9A%E1%83%98._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98._1913.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%E1%83%A8%E1%83%9D%E1%83%97%E1%83%90_%E1%83%A0%E1%83%A3%E1%83%A1%E1%83%97%E1%83%90%E1%83%95%E1%83%94%E1%83%9A%E1%83%98._%E1%83%9C%E1%83%98%E1%83%99%E1%83%9D_%E1%83%A4%E1%83%98%E1%83%A0%E1%83%9D%E1%83%A1%E1%83%9B%E1%83%90%E1%83%9C%E1%83%98._1913.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_015",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-10.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-10.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_016",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-100.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-100.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_017",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-104.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-104.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_018",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-105.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-105.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_019",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-11.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-11.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_020",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-113.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-113.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_021",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-115.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-115.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_022",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-12.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-12.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_023",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-128.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-128.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_024",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-129.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-129.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_025",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-130.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-130.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_026",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-131.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-131.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_027",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-132.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-132.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_028",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-134.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-134.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_029",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-135.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-135.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_030",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-136.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-136.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_031",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-137.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-137.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_032",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-139.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-139.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_033",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-143.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-143.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_034",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-148.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-148.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_035",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-15.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-15.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_036",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-156.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-156.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_037",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-161.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-161.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_038",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-164.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-164.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_039",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-166.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-166.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_040",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-183.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-183.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_041",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-194.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-194.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_042",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-195.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-195.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_043",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-196.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-196.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_044",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-197.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-197.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_045",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-201.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-201.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_046",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-203.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-203.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_047",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-22.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-22.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_048",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-24.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-24.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_049",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-25.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-25.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_050",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-26.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-26.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_051",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-30.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-30.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_052",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-32.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-32.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_053",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-34.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-34.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_054",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-35.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-35.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_055",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-36.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-36.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_056",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-38.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-38.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_057",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-38_-_2.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-38_-_2.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_058",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-4.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-4.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_059",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-45.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-45.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_060",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-50.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-50.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_061",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-57.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-57.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_062",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-60.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-60.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_063",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-64.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-64.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_064",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-65.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-65.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_065",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-7.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-7.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_066",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-73.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-73.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_067",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-76.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-76.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_068",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-77.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-77.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_069",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-78.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-78.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_070",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-8.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-8.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_071",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-81.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-81.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_072",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-82.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-82.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_073",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-88.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-88.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_074",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-89.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-89.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_075",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-92.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-92.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_076",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-93.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-93.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_077",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-95.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9F%D0%B8%D1%80%D0%BE%D1%81%D0%BC%D0%B0%D0%BD%D0%B8._%D0%91-95.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_078",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/An_eagle_with_a_captured_hare.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/An_eagle_with_a_captured_hare.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_079",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Bear_and_her_cubs.png?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Bear_and_her_cubs.png?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_080",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Celebration._Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Celebration._Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_081",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Celebration_by_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Celebration_by_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_082",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Childless_Millionaire_and_a_Poor_Woman_Blessed_with_CHildren.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Childless_Millionaire_and_a_Poor_Woman_Blessed_with_CHildren.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_083",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Cook_by_Niko_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Cook_by_Niko_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_084",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Deer._Niko_Pirosmani._1909.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Deer._Niko_Pirosmani._1909.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_085",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Doctor_on_a_Jackass_-_Niko_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Doctor_on_a_Jackass_-_Niko_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_086",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Eagle_seizing_a_hare_-_Niko_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Eagle_seizing_a_hare_-_Niko_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_087",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Feast_of_the_Malakans_%28Pirosmani%29.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Feast_of_the_Malakans_%28Pirosmani%29.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_088",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Fest_am_Fluss_Zcheniszkali_von_Niko_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Fest_am_Fluss_Zcheniszkali_von_Niko_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_089",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Fox_by_Niko_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Fox_by_Niko_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_090",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/G._Gabashvili._Portrait_of_a_Prince._1902.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/G._Gabashvili._Portrait_of_a_Prince._1902.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_091",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gabashvili._Khevsur_the_Flag-Bearer.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Gabashvili._Khevsur_the_Flag-Bearer.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_092",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Georgian_Woman_with_a_Tambourine_-_Niko_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Georgian_Woman_with_a_Tambourine_-_Niko_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_093",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Georgian_woman_with_Lechaki_%28Georgian_woman_with_tambourine%29._Oil_on_oilcloth._130X105_cm._Private_collection.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Georgian_woman_with_Lechaki_%28Georgian_woman_with_tambourine%29._Oil_on_oilcloth._130X105_cm._Private_collection.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_094",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gigo_Gabashvili._Georgian_woman.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Gigo_Gabashvili._Georgian_woman.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_095",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gigo_Gabashvili._Khevsur_feast.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Gigo_Gabashvili._Khevsur_feast.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_096",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gigo_Gabashvili._Oil_on_Cardboard._18x31_cm.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Gigo_Gabashvili._Oil_on_Cardboard._18x31_cm.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_097",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gigo_Gabashvli._Church_Feast.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Gigo_Gabashvli._Church_Feast.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_098",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Janitor_by_Niko_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Janitor_by_Niko_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_099",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Kakheti_saga._feast.JPG?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Kakheti_saga._feast.JPG?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_100",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Kinderloser_Million%C3%A4r_und_arme_Frau_mit_Kindern_-_Niko_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Kinderloser_Million%C3%A4r_und_arme_Frau_mit_Kindern_-_Niko_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_101",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Lambkin_and_Easter_Table_with_Flying_Angels_-_Niko_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Lambkin_and_Easter_Table_with_Flying_Angels_-_Niko_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_102",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Little_Girl_with_a_Patterned_Balloon_%28ca._1909-1912%29_-_Niko_Pirosmani.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Little_Girl_with_a_Patterned_Balloon_%28ca._1909-1912%29_-_Niko_Pirosmani.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_103",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/NicoPirosmani_MilkingCow.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/NicoPirosmani_MilkingCow.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_104",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_PIROSMANI_%28Nikolai_Aslanovich_Pirosmanashvili%29._%27%27Two_Georgians_at_Marani%27%27._Oil_on_oil-cloth%2C_107x210_cm._Private_collection%2C_Moscow.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_PIROSMANI_%28Nikolai_Aslanovich_Pirosmanashvili%29._%27%27Two_Georgians_at_Marani%27%27._Oil_on_oil-cloth%2C_107x210_cm._Private_collection%2C_Moscow.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_105",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._%27%27Black_Lion%27%27._Oil_on_oilcloth._Private_collection.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._%27%27Black_Lion%27%27._Oil_on_oilcloth._Private_collection.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_106",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._%27%27Threshing_Floor_in_the_Country%27%27._Oil_on_cardboard%2C_80x100_cm._The_Tretyakov_Gallery%2C_Moscow.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._%27%27Threshing_Floor_in_the_Country%27%27._Oil_on_cardboard%2C_80x100_cm._The_Tretyakov_Gallery%2C_Moscow.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_107",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._%C2%ABA_Deer%C2%BB._91x104_cm.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._%C2%ABA_Deer%C2%BB._91x104_cm.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_108",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._%C2%ABFox%C2%BB.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._%C2%ABFox%C2%BB.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_109",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._%C2%ABWalking_Gazelle%C2%BB._62x55_cm._Oli_on_oilcloth.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._%C2%ABWalking_Gazelle%C2%BB._62x55_cm._Oli_on_oilcloth.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_110",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Autumn_Feast._Niko_Six_-_picture_Panel._Oil_on_oilcloth._179%2C5X379.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Autumn_Feast._Niko_Six_-_picture_Panel._Oil_on_oilcloth._179%2C5X379.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_111",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Bear.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Bear.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_112",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Black_Bear.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Black_Bear.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_113",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Black_Buffulo_on_a_White_Background._Oil_on_oilcloth._Private_collection.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Black_Buffulo_on_a_White_Background._Oil_on_oilcloth._Private_collection.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_114",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Celebration.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Celebration.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_115",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Fawn.JPG?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Fawn.JPG?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_116",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Fisherman_among_Rocks._Oil_on_oilcloth._The_Tretyakov_Gallery%2C_Moscow%2C_Russia.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Fisherman_among_Rocks._Oil_on_oilcloth._The_Tretyakov_Gallery%2C_Moscow%2C_Russia.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "art_117",
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Lamb.jpg?width=1000",
+    "thumbnailUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Niko_Pirosmani._Lamb.jpg?width=400",
+    "tags": [
+      "georgian-art",
+      "painting",
+      "niko-pirosmani"
+    ],
+    "category": "georgian-painting",
+    "provider": "curated",
+    "author": "Niko Pirosmani"
+  },
+  {
+    "id": "photo_001",
     "url": "https://picsum.photos/seed/dreamclue-dream-1/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-dream-1/400/600",
     "title": "Dream",
@@ -24,7 +1545,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_002",
+    "id": "photo_002",
     "url": "https://picsum.photos/seed/dreamclue-lighthouse-2/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-lighthouse-2/400/600",
     "title": "Lighthouse",
@@ -36,7 +1557,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_003",
+    "id": "photo_003",
     "url": "https://picsum.photos/seed/dreamclue-forest-3/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-forest-3/400/600",
     "title": "Forest",
@@ -48,7 +1569,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_004",
+    "id": "photo_004",
     "url": "https://picsum.photos/seed/dreamclue-astronaut-4/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-astronaut-4/400/600",
     "title": "Astronaut",
@@ -60,7 +1581,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_005",
+    "id": "photo_005",
     "url": "https://picsum.photos/seed/dreamclue-carousel-5/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-carousel-5/400/600",
     "title": "Carousel",
@@ -72,7 +1593,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_006",
+    "id": "photo_006",
     "url": "https://picsum.photos/seed/dreamclue-clockwork-6/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-clockwork-6/400/600",
     "title": "Clockwork",
@@ -84,7 +1605,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_007",
+    "id": "photo_007",
     "url": "https://picsum.photos/seed/dreamclue-whale-7/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-whale-7/400/600",
     "title": "Whale",
@@ -96,7 +1617,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_008",
+    "id": "photo_008",
     "url": "https://picsum.photos/seed/dreamclue-origami-8/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-origami-8/400/600",
     "title": "Origami",
@@ -108,7 +1629,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_009",
+    "id": "photo_009",
     "url": "https://picsum.photos/seed/dreamclue-aurora-9/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-aurora-9/400/600",
     "title": "Aurora",
@@ -120,7 +1641,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_010",
+    "id": "photo_010",
     "url": "https://picsum.photos/seed/dreamclue-desert-10/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-desert-10/400/600",
     "title": "Desert",
@@ -132,7 +1653,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_011",
+    "id": "photo_011",
     "url": "https://picsum.photos/seed/dreamclue-violin-11/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-violin-11/400/600",
     "title": "Violin",
@@ -144,7 +1665,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_012",
+    "id": "photo_012",
     "url": "https://picsum.photos/seed/dreamclue-labyrinth-12/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-labyrinth-12/400/600",
     "title": "Labyrinth",
@@ -156,7 +1677,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_013",
+    "id": "photo_013",
     "url": "https://picsum.photos/seed/dreamclue-balloon-13/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-balloon-13/400/600",
     "title": "Balloon",
@@ -168,7 +1689,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_014",
+    "id": "photo_014",
     "url": "https://picsum.photos/seed/dreamclue-harbor-14/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-harbor-14/400/600",
     "title": "Harbor",
@@ -180,7 +1701,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_015",
+    "id": "photo_015",
     "url": "https://picsum.photos/seed/dreamclue-glacier-15/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-glacier-15/400/600",
     "title": "Glacier",
@@ -192,7 +1713,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_016",
+    "id": "photo_016",
     "url": "https://picsum.photos/seed/dreamclue-fox-16/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-fox-16/400/600",
     "title": "Fox",
@@ -204,7 +1725,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_017",
+    "id": "photo_017",
     "url": "https://picsum.photos/seed/dreamclue-temple-17/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-temple-17/400/600",
     "title": "Temple",
@@ -216,7 +1737,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_018",
+    "id": "photo_018",
     "url": "https://picsum.photos/seed/dreamclue-meadow-18/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-meadow-18/400/600",
     "title": "Meadow",
@@ -228,7 +1749,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_019",
+    "id": "photo_019",
     "url": "https://picsum.photos/seed/dreamclue-comet-19/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-comet-19/400/600",
     "title": "Comet",
@@ -240,7 +1761,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_020",
+    "id": "photo_020",
     "url": "https://picsum.photos/seed/dreamclue-marketplace-20/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-marketplace-20/400/600",
     "title": "Marketplace",
@@ -252,7 +1773,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_021",
+    "id": "photo_021",
     "url": "https://picsum.photos/seed/dreamclue-waterfall-21/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-waterfall-21/400/600",
     "title": "Waterfall",
@@ -264,7 +1785,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_022",
+    "id": "photo_022",
     "url": "https://picsum.photos/seed/dreamclue-mask-22/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-mask-22/400/600",
     "title": "Mask",
@@ -276,7 +1797,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_023",
+    "id": "photo_023",
     "url": "https://picsum.photos/seed/dreamclue-windmill-23/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-windmill-23/400/600",
     "title": "Windmill",
@@ -288,7 +1809,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_024",
+    "id": "photo_024",
     "url": "https://picsum.photos/seed/dreamclue-koi-24/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-koi-24/400/600",
     "title": "Koi",
@@ -300,7 +1821,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_025",
+    "id": "photo_025",
     "url": "https://picsum.photos/seed/dreamclue-volcano-25/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-volcano-25/400/600",
     "title": "Volcano",
@@ -312,7 +1833,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_026",
+    "id": "photo_026",
     "url": "https://picsum.photos/seed/dreamclue-circus-26/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-circus-26/400/600",
     "title": "Circus",
@@ -324,7 +1845,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_027",
+    "id": "photo_027",
     "url": "https://picsum.photos/seed/dreamclue-library-27/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-library-27/400/600",
     "title": "Library",
@@ -336,7 +1857,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_028",
+    "id": "photo_028",
     "url": "https://picsum.photos/seed/dreamclue-bridge-28/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-bridge-28/400/600",
     "title": "Bridge",
@@ -348,7 +1869,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_029",
+    "id": "photo_029",
     "url": "https://picsum.photos/seed/dreamclue-owl-29/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-owl-29/400/600",
     "title": "Owl",
@@ -360,7 +1881,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_030",
+    "id": "photo_030",
     "url": "https://picsum.photos/seed/dreamclue-garden-30/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-garden-30/400/600",
     "title": "Garden",
@@ -372,7 +1893,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_031",
+    "id": "photo_031",
     "url": "https://picsum.photos/seed/dreamclue-sailboat-31/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-sailboat-31/400/600",
     "title": "Sailboat",
@@ -384,7 +1905,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_032",
+    "id": "photo_032",
     "url": "https://picsum.photos/seed/dreamclue-castle-32/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-castle-32/400/600",
     "title": "Castle",
@@ -396,7 +1917,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_033",
+    "id": "photo_033",
     "url": "https://picsum.photos/seed/dreamclue-firefly-33/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-firefly-33/400/600",
     "title": "Firefly",
@@ -408,7 +1929,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_034",
+    "id": "photo_034",
     "url": "https://picsum.photos/seed/dreamclue-dune-34/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-dune-34/400/600",
     "title": "Dune",
@@ -420,7 +1941,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_035",
+    "id": "photo_035",
     "url": "https://picsum.photos/seed/dreamclue-orchard-35/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-orchard-35/400/600",
     "title": "Orchard",
@@ -432,7 +1953,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_036",
+    "id": "photo_036",
     "url": "https://picsum.photos/seed/dreamclue-reef-36/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-reef-36/400/600",
     "title": "Reef",
@@ -444,7 +1965,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_037",
+    "id": "photo_037",
     "url": "https://picsum.photos/seed/dreamclue-tram-37/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-tram-37/400/600",
     "title": "Tram",
@@ -456,7 +1977,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_038",
+    "id": "photo_038",
     "url": "https://picsum.photos/seed/dreamclue-moth-38/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-moth-38/400/600",
     "title": "Moth",
@@ -468,7 +1989,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_039",
+    "id": "photo_039",
     "url": "https://picsum.photos/seed/dreamclue-fountain-39/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-fountain-39/400/600",
     "title": "Fountain",
@@ -480,7 +2001,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_040",
+    "id": "photo_040",
     "url": "https://picsum.photos/seed/dreamclue-canyon-40/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-canyon-40/400/600",
     "title": "Canyon",
@@ -492,7 +2013,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_041",
+    "id": "photo_041",
     "url": "https://picsum.photos/seed/dreamclue-kite-41/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-kite-41/400/600",
     "title": "Kite",
@@ -504,7 +2025,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_042",
+    "id": "photo_042",
     "url": "https://picsum.photos/seed/dreamclue-planet-42/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-planet-42/400/600",
     "title": "Planet",
@@ -516,7 +2037,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_043",
+    "id": "photo_043",
     "url": "https://picsum.photos/seed/dreamclue-bakery-43/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-bakery-43/400/600",
     "title": "Bakery",
@@ -528,7 +2049,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_044",
+    "id": "photo_044",
     "url": "https://picsum.photos/seed/dreamclue-feather-44/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-feather-44/400/600",
     "title": "Feather",
@@ -540,7 +2061,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_045",
+    "id": "photo_045",
     "url": "https://picsum.photos/seed/dreamclue-iceberg-45/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-iceberg-45/400/600",
     "title": "Iceberg",
@@ -552,7 +2073,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_046",
+    "id": "photo_046",
     "url": "https://picsum.photos/seed/dreamclue-lantern-46/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-lantern-46/400/600",
     "title": "Lantern",
@@ -564,7 +2085,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_047",
+    "id": "photo_047",
     "url": "https://picsum.photos/seed/dreamclue-swamp-47/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-swamp-47/400/600",
     "title": "Swamp",
@@ -576,7 +2097,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_048",
+    "id": "photo_048",
     "url": "https://picsum.photos/seed/dreamclue-peacock-48/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-peacock-48/400/600",
     "title": "Peacock",
@@ -588,7 +2109,7 @@ export const DEFAULT_CARDS: Card[] = [
     "provider": "curated"
   },
   {
-    "id": "card_049",
+    "id": "photo_049",
     "url": "https://picsum.photos/seed/dreamclue-mountain-49/800/1200",
     "thumbnailUrl": "https://picsum.photos/seed/dreamclue-mountain-49/400/600",
     "title": "Mountain",
@@ -597,882 +2118,6 @@ export const DEFAULT_CARDS: Card[] = [
       "mountain"
     ],
     "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_050",
-    "url": "https://picsum.photos/seed/dreamclue-subway-50/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-subway-50/400/600",
-    "title": "Subway",
-    "tags": [
-      "dreamclue",
-      "subway"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_051",
-    "url": "https://picsum.photos/seed/dreamclue-tulip-51/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-tulip-51/400/600",
-    "title": "Tulip",
-    "tags": [
-      "dreamclue",
-      "tulip"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_052",
-    "url": "https://picsum.photos/seed/dreamclue-shipwreck-52/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-shipwreck-52/400/600",
-    "title": "Shipwreck",
-    "tags": [
-      "dreamclue",
-      "shipwreck"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_053",
-    "url": "https://picsum.photos/seed/dreamclue-beehive-53/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-beehive-53/400/600",
-    "title": "Beehive",
-    "tags": [
-      "dreamclue",
-      "beehive"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_054",
-    "url": "https://picsum.photos/seed/dreamclue-mirror-54/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-mirror-54/400/600",
-    "title": "Mirror",
-    "tags": [
-      "dreamclue",
-      "mirror"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_055",
-    "url": "https://picsum.photos/seed/dreamclue-jungle-55/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-jungle-55/400/600",
-    "title": "Jungle",
-    "tags": [
-      "dreamclue",
-      "jungle"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_056",
-    "url": "https://picsum.photos/seed/dreamclue-snowfall-56/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-snowfall-56/400/600",
-    "title": "Snowfall",
-    "tags": [
-      "dreamclue",
-      "snowfall"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_057",
-    "url": "https://picsum.photos/seed/dreamclue-cathedral-57/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-cathedral-57/400/600",
-    "title": "Cathedral",
-    "tags": [
-      "dreamclue",
-      "cathedral"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_058",
-    "url": "https://picsum.photos/seed/dreamclue-seashell-58/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-seashell-58/400/600",
-    "title": "Seashell",
-    "tags": [
-      "dreamclue",
-      "seashell"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_059",
-    "url": "https://picsum.photos/seed/dreamclue-bonfire-59/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-bonfire-59/400/600",
-    "title": "Bonfire",
-    "tags": [
-      "dreamclue",
-      "bonfire"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_060",
-    "url": "https://picsum.photos/seed/dreamclue-staircase-60/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-staircase-60/400/600",
-    "title": "Staircase",
-    "tags": [
-      "dreamclue",
-      "staircase"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_061",
-    "url": "https://picsum.photos/seed/dreamclue-raincoat-61/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-raincoat-61/400/600",
-    "title": "Raincoat",
-    "tags": [
-      "dreamclue",
-      "raincoat"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_062",
-    "url": "https://picsum.photos/seed/dreamclue-telescope-62/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-telescope-62/400/600",
-    "title": "Telescope",
-    "tags": [
-      "dreamclue",
-      "telescope"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_063",
-    "url": "https://picsum.photos/seed/dreamclue-vineyard-63/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-vineyard-63/400/600",
-    "title": "Vineyard",
-    "tags": [
-      "dreamclue",
-      "vineyard"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_064",
-    "url": "https://picsum.photos/seed/dreamclue-cactus-64/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-cactus-64/400/600",
-    "title": "Cactus",
-    "tags": [
-      "dreamclue",
-      "cactus"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_065",
-    "url": "https://picsum.photos/seed/dreamclue-carnival-65/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-carnival-65/400/600",
-    "title": "Carnival",
-    "tags": [
-      "dreamclue",
-      "carnival"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_066",
-    "url": "https://picsum.photos/seed/dreamclue-harp-66/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-harp-66/400/600",
-    "title": "Harp",
-    "tags": [
-      "dreamclue",
-      "harp"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_067",
-    "url": "https://picsum.photos/seed/dreamclue-cliff-67/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-cliff-67/400/600",
-    "title": "Cliff",
-    "tags": [
-      "dreamclue",
-      "cliff"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_068",
-    "url": "https://picsum.photos/seed/dreamclue-meteor-68/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-meteor-68/400/600",
-    "title": "Meteor",
-    "tags": [
-      "dreamclue",
-      "meteor"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_069",
-    "url": "https://picsum.photos/seed/dreamclue-umbrella-69/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-umbrella-69/400/600",
-    "title": "Umbrella",
-    "tags": [
-      "dreamclue",
-      "umbrella"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_070",
-    "url": "https://picsum.photos/seed/dreamclue-deer-70/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-deer-70/400/600",
-    "title": "Deer",
-    "tags": [
-      "dreamclue",
-      "deer"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_071",
-    "url": "https://picsum.photos/seed/dreamclue-pier-71/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-pier-71/400/600",
-    "title": "Pier",
-    "tags": [
-      "dreamclue",
-      "pier"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_072",
-    "url": "https://picsum.photos/seed/dreamclue-tundra-72/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-tundra-72/400/600",
-    "title": "Tundra",
-    "tags": [
-      "dreamclue",
-      "tundra"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_073",
-    "url": "https://picsum.photos/seed/dreamclue-greenhouse-73/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-greenhouse-73/400/600",
-    "title": "Greenhouse",
-    "tags": [
-      "dreamclue",
-      "greenhouse"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_074",
-    "url": "https://picsum.photos/seed/dreamclue-anchor-74/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-anchor-74/400/600",
-    "title": "Anchor",
-    "tags": [
-      "dreamclue",
-      "anchor"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_075",
-    "url": "https://picsum.photos/seed/dreamclue-moon-75/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-moon-75/400/600",
-    "title": "Moon",
-    "tags": [
-      "dreamclue",
-      "moon"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_076",
-    "url": "https://picsum.photos/seed/dreamclue-riverboat-76/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-riverboat-76/400/600",
-    "title": "Riverboat",
-    "tags": [
-      "dreamclue",
-      "riverboat"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_077",
-    "url": "https://picsum.photos/seed/dreamclue-festival-77/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-festival-77/400/600",
-    "title": "Festival",
-    "tags": [
-      "dreamclue",
-      "festival"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_078",
-    "url": "https://picsum.photos/seed/dreamclue-pinwheel-78/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-pinwheel-78/400/600",
-    "title": "Pinwheel",
-    "tags": [
-      "dreamclue",
-      "pinwheel"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_079",
-    "url": "https://picsum.photos/seed/dreamclue-oasis-79/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-oasis-79/400/600",
-    "title": "Oasis",
-    "tags": [
-      "dreamclue",
-      "oasis"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_080",
-    "url": "https://picsum.photos/seed/dreamclue-chandelier-80/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-chandelier-80/400/600",
-    "title": "Chandelier",
-    "tags": [
-      "dreamclue",
-      "chandelier"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_081",
-    "url": "https://picsum.photos/seed/dreamclue-compass-81/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-compass-81/400/600",
-    "title": "Compass",
-    "tags": [
-      "dreamclue",
-      "compass"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_082",
-    "url": "https://picsum.photos/seed/dreamclue-driftwood-82/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-driftwood-82/400/600",
-    "title": "Driftwood",
-    "tags": [
-      "dreamclue",
-      "driftwood"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_083",
-    "url": "https://picsum.photos/seed/dreamclue-hummingbird-83/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-hummingbird-83/400/600",
-    "title": "Hummingbird",
-    "tags": [
-      "dreamclue",
-      "hummingbird"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_084",
-    "url": "https://picsum.photos/seed/dreamclue-ferriswheel-84/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-ferriswheel-84/400/600",
-    "title": "Ferriswheel",
-    "tags": [
-      "dreamclue",
-      "ferriswheel"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_085",
-    "url": "https://picsum.photos/seed/dreamclue-maze-85/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-maze-85/400/600",
-    "title": "Maze",
-    "tags": [
-      "dreamclue",
-      "maze"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_086",
-    "url": "https://picsum.photos/seed/dreamclue-lagoon-86/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-lagoon-86/400/600",
-    "title": "Lagoon",
-    "tags": [
-      "dreamclue",
-      "lagoon"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_087",
-    "url": "https://picsum.photos/seed/dreamclue-scarecrow-87/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-scarecrow-87/400/600",
-    "title": "Scarecrow",
-    "tags": [
-      "dreamclue",
-      "scarecrow"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_088",
-    "url": "https://picsum.photos/seed/dreamclue-typewriter-88/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-typewriter-88/400/600",
-    "title": "Typewriter",
-    "tags": [
-      "dreamclue",
-      "typewriter"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_089",
-    "url": "https://picsum.photos/seed/dreamclue-wisteria-89/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-wisteria-89/400/600",
-    "title": "Wisteria",
-    "tags": [
-      "dreamclue",
-      "wisteria"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_090",
-    "url": "https://picsum.photos/seed/dreamclue-iceflower-90/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-iceflower-90/400/600",
-    "title": "Iceflower",
-    "tags": [
-      "dreamclue",
-      "iceflower"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_091",
-    "url": "https://picsum.photos/seed/dreamclue-marble-91/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-marble-91/400/600",
-    "title": "Marble",
-    "tags": [
-      "dreamclue",
-      "marble"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_092",
-    "url": "https://picsum.photos/seed/dreamclue-nightmarket-92/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-nightmarket-92/400/600",
-    "title": "Nightmarket",
-    "tags": [
-      "dreamclue",
-      "nightmarket"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_093",
-    "url": "https://picsum.photos/seed/dreamclue-pagoda-93/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-pagoda-93/400/600",
-    "title": "Pagoda",
-    "tags": [
-      "dreamclue",
-      "pagoda"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_094",
-    "url": "https://picsum.photos/seed/dreamclue-seagull-94/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-seagull-94/400/600",
-    "title": "Seagull",
-    "tags": [
-      "dreamclue",
-      "seagull"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_095",
-    "url": "https://picsum.photos/seed/dreamclue-waterlily-95/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-waterlily-95/400/600",
-    "title": "Waterlily",
-    "tags": [
-      "dreamclue",
-      "waterlily"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_096",
-    "url": "https://picsum.photos/seed/dreamclue-zeppelin-96/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-zeppelin-96/400/600",
-    "title": "Zeppelin",
-    "tags": [
-      "dreamclue",
-      "zeppelin"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_097",
-    "url": "https://picsum.photos/seed/dreamclue-archway-97/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-archway-97/400/600",
-    "title": "Archway",
-    "tags": [
-      "dreamclue",
-      "archway"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_098",
-    "url": "https://picsum.photos/seed/dreamclue-birdcage-98/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-birdcage-98/400/600",
-    "title": "Birdcage",
-    "tags": [
-      "dreamclue",
-      "birdcage"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_099",
-    "url": "https://picsum.photos/seed/dreamclue-candle-99/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-candle-99/400/600",
-    "title": "Candle",
-    "tags": [
-      "dreamclue",
-      "candle"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_100",
-    "url": "https://picsum.photos/seed/dreamclue-dandelion-100/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-dandelion-100/400/600",
-    "title": "Dandelion",
-    "tags": [
-      "dreamclue",
-      "dandelion"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_101",
-    "url": "https://picsum.photos/seed/dreamclue-elephant-101/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-elephant-101/400/600",
-    "title": "Elephant",
-    "tags": [
-      "dreamclue",
-      "elephant"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_102",
-    "url": "https://picsum.photos/seed/dreamclue-fjord-102/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-fjord-102/400/600",
-    "title": "Fjord",
-    "tags": [
-      "dreamclue",
-      "fjord"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_103",
-    "url": "https://picsum.photos/seed/dreamclue-gondola-103/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-gondola-103/400/600",
-    "title": "Gondola",
-    "tags": [
-      "dreamclue",
-      "gondola"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_104",
-    "url": "https://picsum.photos/seed/dreamclue-hourglass-104/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-hourglass-104/400/600",
-    "title": "Hourglass",
-    "tags": [
-      "dreamclue",
-      "hourglass"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_105",
-    "url": "https://picsum.photos/seed/dreamclue-inkwell-105/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-inkwell-105/400/600",
-    "title": "Inkwell",
-    "tags": [
-      "dreamclue",
-      "inkwell"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_106",
-    "url": "https://picsum.photos/seed/dreamclue-jellyfish-106/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-jellyfish-106/400/600",
-    "title": "Jellyfish",
-    "tags": [
-      "dreamclue",
-      "jellyfish"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_107",
-    "url": "https://picsum.photos/seed/dreamclue-kaleidoscope-107/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-kaleidoscope-107/400/600",
-    "title": "Kaleidoscope",
-    "tags": [
-      "dreamclue",
-      "kaleidoscope"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_108",
-    "url": "https://picsum.photos/seed/dreamclue-lark-108/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-lark-108/400/600",
-    "title": "Lark",
-    "tags": [
-      "dreamclue",
-      "lark"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_109",
-    "url": "https://picsum.photos/seed/dreamclue-mushroom-109/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-mushroom-109/400/600",
-    "title": "Mushroom",
-    "tags": [
-      "dreamclue",
-      "mushroom"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_110",
-    "url": "https://picsum.photos/seed/dreamclue-nautilus-110/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-nautilus-110/400/600",
-    "title": "Nautilus",
-    "tags": [
-      "dreamclue",
-      "nautilus"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_111",
-    "url": "https://picsum.photos/seed/dreamclue-origamibird-111/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-origamibird-111/400/600",
-    "title": "Origamibird",
-    "tags": [
-      "dreamclue",
-      "origamibird"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_112",
-    "url": "https://picsum.photos/seed/dreamclue-parasol-112/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-parasol-112/400/600",
-    "title": "Parasol",
-    "tags": [
-      "dreamclue",
-      "parasol"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_113",
-    "url": "https://picsum.photos/seed/dreamclue-quartz-113/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-quartz-113/400/600",
-    "title": "Quartz",
-    "tags": [
-      "dreamclue",
-      "quartz"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_114",
-    "url": "https://picsum.photos/seed/dreamclue-raven-114/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-raven-114/400/600",
-    "title": "Raven",
-    "tags": [
-      "dreamclue",
-      "raven"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_115",
-    "url": "https://picsum.photos/seed/dreamclue-stardust-115/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-stardust-115/400/600",
-    "title": "Stardust",
-    "tags": [
-      "dreamclue",
-      "stardust"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_116",
-    "url": "https://picsum.photos/seed/dreamclue-thistle-116/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-thistle-116/400/600",
-    "title": "Thistle",
-    "tags": [
-      "dreamclue",
-      "thistle"
-    ],
-    "category": "nature",
-    "provider": "curated"
-  },
-  {
-    "id": "card_117",
-    "url": "https://picsum.photos/seed/dreamclue-umbra-117/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-umbra-117/400/600",
-    "title": "Umbra",
-    "tags": [
-      "dreamclue",
-      "umbra"
-    ],
-    "category": "wonder",
-    "provider": "curated"
-  },
-  {
-    "id": "card_118",
-    "url": "https://picsum.photos/seed/dreamclue-velvet-118/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-velvet-118/400/600",
-    "title": "Velvet",
-    "tags": [
-      "dreamclue",
-      "velvet"
-    ],
-    "category": "journey",
-    "provider": "curated"
-  },
-  {
-    "id": "card_119",
-    "url": "https://picsum.photos/seed/dreamclue-willow-119/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-willow-119/400/600",
-    "title": "Willow",
-    "tags": [
-      "dreamclue",
-      "willow"
-    ],
-    "category": "fantasy",
-    "provider": "curated"
-  },
-  {
-    "id": "card_120",
-    "url": "https://picsum.photos/seed/dreamclue-xylophone-120/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-xylophone-120/400/600",
-    "title": "Xylophone",
-    "tags": [
-      "dreamclue",
-      "xylophone"
-    ],
-    "category": "everyday",
-    "provider": "curated"
-  },
-  {
-    "id": "card_121",
-    "url": "https://picsum.photos/seed/dreamclue-yarn-121/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-yarn-121/400/600",
-    "title": "Yarn",
-    "tags": [
-      "dreamclue",
-      "yarn"
-    ],
-    "category": "dream",
-    "provider": "curated"
-  },
-  {
-    "id": "card_122",
-    "url": "https://picsum.photos/seed/dreamclue-zephyr-122/800/1200",
-    "thumbnailUrl": "https://picsum.photos/seed/dreamclue-zephyr-122/400/600",
-    "title": "Zephyr",
-    "tags": [
-      "dreamclue",
-      "zephyr"
-    ],
-    "category": "nature",
     "provider": "curated"
   }
 ];

@@ -34,6 +34,10 @@ export const GameTable: React.FC<GameTableProps> = ({
   const [clueInput, setClueInput] = useState('');
   const [selectedHandCardId, setSelectedHandCardId] = useState<string | null>(null);
   const [selectedVoteCardId, setSelectedVoteCardId] = useState<string | null>(null);
+  // Optimistic flags so the confirmation shows the instant the player taps,
+  // without waiting for the server round-trip.
+  const [locallyVoted, setLocallyVoted] = useState(false);
+  const [locallySubmitted, setLocallySubmitted] = useState(false);
   const [previewCard, setPreviewCard] = useState<Card | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [showScoreboard, setShowScoreboard] = useState<boolean>(false);
@@ -73,6 +77,8 @@ export const GameTable: React.FC<GameTableProps> = ({
     setSelectedHandCardId(null);
     setSelectedVoteCardId(null);
     setClueInput('');
+    setLocallyVoted(false);
+    setLocallySubmitted(false);
   }, [roomState.roundNumber, roomState.phase]);
 
   // Guaranteed-visible fallback so a card never renders as a broken icon.
@@ -99,12 +105,14 @@ export const GameTable: React.FC<GameTableProps> = ({
 
   const handleConfirmPlayerCard = () => {
     if (!selectedHandCardId) return;
+    setLocallySubmitted(true); // instant feedback, before the server round-trip
     soundEffects.playCardSelect();
     onSubmitPlayerCard(selectedHandCardId);
   };
 
   const handleConfirmVote = () => {
     if (!selectedVoteCardId) return;
+    setLocallyVoted(true); // instant feedback, before the server round-trip
     soundEffects.playVoteSubmitted();
     onSubmitVote(selectedVoteCardId);
   };
@@ -264,7 +272,7 @@ export const GameTable: React.FC<GameTableProps> = ({
 
             {!isStoryteller ? (
               <div className="space-y-3">
-                {myState.confirmedSubmission ? (
+                {myState.confirmedSubmission || locallySubmitted ? (
                   <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-bold animate-pulse">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{t(language, 'cardConfirmed')}</span>
@@ -374,8 +382,8 @@ export const GameTable: React.FC<GameTableProps> = ({
             {/* Voting Controls */}
             <div className="text-center pt-2">
               {!isStoryteller ? (
-                myState.confirmedVote ? (
-                  <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
+                myState.confirmedVote || locallyVoted ? (
+                  <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-bold animate-pulse">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{t(language, 'voteConfirmed')}</span>
                   </div>

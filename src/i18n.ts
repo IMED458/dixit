@@ -71,7 +71,7 @@ export const i18n = {
     votingPrompt: 'რომელი ბარათია მთხრობელის? მიეცით ხმა!',
     cantVoteOwnCard: 'თქვენს მიერ ჩამოწერილი ბარათისთვის ხმის მიცემა არ შეგიძლიათ',
     confirmVote: 'ხმის მიცემა',
-    voteConfirmed: 'ხმა მიცემულია!',
+    voteConfirmed: 'თქვენი ხმა მიღებულია!',
     storytellerCantVote: 'თქვენ ხართ მთხრობელი. ველოდებით სხვა მოთამაშეების ხმებს...',
     
     // Results & Scoring
@@ -214,7 +214,7 @@ export const i18n = {
     votingPrompt: 'Which card belongs to the Storyteller? Cast your vote!',
     cantVoteOwnCard: 'You cannot vote for your own submitted card',
     confirmVote: 'Cast Vote',
-    voteConfirmed: 'Vote cast!',
+    voteConfirmed: 'Your vote has been received!',
     storytellerCantVote: 'You are the Storyteller. Waiting for players to vote...',
     
     // Results & Scoring

@@ -15,7 +15,7 @@
  */
 import {
   addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query,
-  serverTimestamp, setDoc, Firestore, Unsubscribe,
+  setDoc, Firestore, Unsubscribe,
 } from 'firebase/firestore';
 import { Auth, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { db as defaultDb, auth as defaultAuth } from '../firebase';
@@ -101,6 +101,10 @@ export class DixitClient {
       case 'SEND_CHAT': void this.sendChat(action.message); break;
       case 'SEND_REACTION': void this.sendReaction(action.emoji); break;
       case 'RESTART_GAME': void this.sendAction('START_GAME', {}); break;
+      case 'UPDATE_PROFILE':
+        this.optimisticProfile(action.displayName, action.avatarUrl);
+        void this.sendAction('UPDATE_PROFILE', { displayName: action.displayName, avatarUrl: action.avatarUrl });
+        break;
       case 'LIST_PUBLIC_ROOMS': case 'KICK_PLAYER': case 'TRANSFER_HOST': break;
       default: { const { type, ...payload } = action as any; void this.sendAction(type, payload); break; }
     }
@@ -251,10 +255,32 @@ export class DixitClient {
     this.emitRoom();
   }
 
+  private optimisticProfile(displayName: string, avatarUrl: string) {
+    const nextName = displayName.trim().substring(0, 32);
+    const nextAvatar = avatarUrl.trim().substring(0, 16);
+    if (this.optimisticPlayer?.id === this.uid) {
+      if (nextName) this.optimisticPlayer.displayName = nextName;
+      if (nextAvatar) this.optimisticPlayer.avatarUrl = nextAvatar;
+    }
+    if (!this.lastPublic) return;
+    this.lastPublic = {
+      ...this.lastPublic,
+      players: this.lastPublic.players.map((p) => {
+        if (p.id !== this.uid) return p;
+        return {
+          ...p,
+          displayName: nextName || p.displayName,
+          avatarUrl: nextAvatar || p.avatarUrl,
+        };
+      }),
+    };
+    this.emitRoom();
+  }
+
   // ---- actions queue ----
   private async sendAction(type: string, payload: any) {
     if (!this.code) return;
-    await addDoc(this.actionsCol(), { uid: this.uid, type, payload: payload ?? null, ts: serverTimestamp() });
+    await addDoc(this.actionsCol(), { uid: this.uid, type, payload: payload ?? null, ts: Date.now() });
   }
 
   // ---- host authority ----

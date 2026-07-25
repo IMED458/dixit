@@ -313,7 +313,7 @@ export const GameTable: React.FC<GameTableProps> = ({
                     }`}
                   >
                     <img
-                      src={revCard.url}
+                      src={revCard.thumbnailUrl || revCard.url}
                       alt="Revealed card"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover"

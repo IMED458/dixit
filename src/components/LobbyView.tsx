@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { Play, CheckCircle2, Crown, Copy, Check, Settings, UserMinus, ShieldAlert, MessageSquare, Send, Smile } from 'lucide-react';
 import { ChatMessage, Language, PrivatePlayerState, PublicGameState, RoomSettings } from '../types';
 import { t } from '../i18n';
+import { copyToClipboard } from '../utils/clipboard';
 
 interface LobbyViewProps {
   language: Language;
@@ -43,9 +44,10 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
   const activePlayers = roomState.players.filter((p) => !p.isSpectator);
   const canStart = isHost && activePlayers.length >= 3;
 
-  const copyLink = () => {
+  const copyLink = async () => {
     const url = `${window.location.origin}?room=${roomState.roomCode}`;
-    navigator.clipboard.writeText(url);
+    const ok = await copyToClipboard(url);
+    if (!ok) return;
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

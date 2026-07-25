@@ -56,6 +56,7 @@ export class DixitClient {
   private actionUnsub: Unsubscribe | null = null;
   private roomUnsubs: Unsubscribe[] = [];
   private timer: any = null;
+  private joinTimeout: any = null;
   private subscribedAt = 0;
 
   private lastPublic: PublicGameState | null = null;
@@ -133,6 +134,21 @@ export class DixitClient {
     await this.maybeBecomeHost(pub.hostPlayerId);
     ls.setItem('dreamclue_room', code);
     this.cb.onReconnectSuccess(this.uid, code);
+    // The room is host-authoritative: our JOIN action is only applied once the
+    // host's browser processes it. If the host is offline nothing ever happens
+    // and the player is left staring at the landing page — surface a clear
+    // message instead of silently doing nothing.
+    this.armJoinTimeout();
+  }
+
+  private armJoinTimeout() {
+    if (this.joinTimeout) clearTimeout(this.joinTimeout);
+    this.joinTimeout = setTimeout(() => {
+      this.joinTimeout = null;
+      if (!this.lastPrivate) {
+        this.cb.onError('ოთახში შესვლა ვერ მოხერხდა — მასპინძელი ხაზზე არ არის. სთხოვეთ, თამაშის ფანჯარა ღია დატოვოს.');
+      }
+    }, 8000);
   }
 
   private async reconnect() {
@@ -183,7 +199,12 @@ export class DixitClient {
     }));
   }
 
-  private emitRoom() { if (this.lastPublic && this.lastPrivate) this.cb.onRoomUpdate(this.lastPublic, this.lastPrivate); }
+  private emitRoom() {
+    if (this.lastPublic && this.lastPrivate) {
+      if (this.joinTimeout) { clearTimeout(this.joinTimeout); this.joinTimeout = null; }
+      this.cb.onRoomUpdate(this.lastPublic, this.lastPrivate);
+    }
+  }
 
   // ---- direct writes: chat + reactions ----
   private async sendChat(message: string) {
@@ -301,6 +322,7 @@ export class DixitClient {
     this.roomUnsubs = [];
     if (this.actionUnsub) { this.actionUnsub(); this.actionUnsub = null; }
     if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+    if (this.joinTimeout) { clearTimeout(this.joinTimeout); this.joinTimeout = null; }
     this.hostRunning = false;
     this.becomingHost = false;
     this.engine = null;

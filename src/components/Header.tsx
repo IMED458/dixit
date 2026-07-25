@@ -8,6 +8,7 @@ import { Sparkles, Volume2, VolumeX, Globe, BookOpen, Shield, Copy, Check, LogOu
 import { Language, PublicGameState } from '../types';
 import { t } from '../i18n';
 import { soundEffects } from '../utils/soundEffects';
+import { copyToClipboard } from '../utils/clipboard';
 
 interface HeaderProps {
   language: Language;
@@ -36,33 +37,34 @@ export const Header: React.FC<HeaderProps> = ({
     setSoundEnabled(!soundEnabled);
   };
 
-  const copyRoomLink = () => {
+  const copyRoomLink = async () => {
     if (!roomState) return;
     const url = `${window.location.origin}?room=${roomState.roomCode}`;
-    navigator.clipboard.writeText(url);
+    const ok = await copyToClipboard(url);
+    if (!ok) return;
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-900/80 border-b border-indigo-500/20 px-4 py-3 shadow-lg">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+    <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-900/80 border-b border-indigo-500/20 px-3 sm:px-4 py-3 shadow-lg">
+      <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-2">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 flex items-center justify-center shadow-md shadow-purple-500/30">
+        <div className="flex items-center gap-2 min-w-0 shrink">
+          <div className="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 flex items-center justify-center shadow-md shadow-purple-500/30">
             <Sparkles className="w-6 h-6 text-white animate-pulse" />
           </div>
-          <div>
-            <h1 className="text-xl font-black bg-gradient-to-r from-purple-200 via-pink-200 to-indigo-100 bg-clip-text text-transparent leading-none tracking-wide">
+          <div className="min-w-0">
+            <h1 className="text-xl font-black bg-gradient-to-r from-purple-200 via-pink-200 to-indigo-100 bg-clip-text text-transparent leading-none tracking-wide truncate">
               DreamClue
             </h1>
-            <p className="text-[11px] font-medium text-purple-300/80">
+            <p className="hidden sm:block text-[11px] font-medium text-purple-300/80 truncate">
               {t(language, 'gameSubTitle')}
             </p>
           </div>
         </div>
 
-        {/* Room Code Badge (if in room) */}
+        {/* Room Code Badge (desktop, if in room) */}
         {roomState && (
           <div className="hidden sm:flex items-center gap-2 bg-indigo-950/60 border border-indigo-500/30 rounded-lg px-3 py-1.5 text-xs font-semibold text-indigo-200">
             <span className="text-indigo-400">{t(language, 'roomCode')}:</span>
@@ -78,7 +80,7 @@ export const Header: React.FC<HeaderProps> = ({
         )}
 
         {/* Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-end shrink-0">
           {/* Connection status indicator */}
           <div
             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
@@ -131,14 +133,30 @@ export const Header: React.FC<HeaderProps> = ({
           {roomState && onLeaveRoom && (
             <button
               onClick={onLeaveRoom}
-              className="p-2 rounded-lg bg-rose-950/60 hover:bg-rose-900/60 border border-rose-500/30 text-rose-300 transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg bg-rose-950/60 hover:bg-rose-900/60 border border-rose-500/30 text-rose-300 transition-colors"
               title={t(language, 'leaveRoom')}
             >
               <LogOut className="w-4 h-4" />
+              <span className="hidden lg:inline text-xs font-bold">{t(language, 'leaveRoom')}</span>
             </button>
           )}
         </div>
       </div>
+
+      {/* Room Code Badge (mobile, if in room) — copy is reachable on phones */}
+      {roomState && (
+        <div className="sm:hidden max-w-7xl mx-auto mt-2 flex items-center justify-center gap-2 bg-indigo-950/60 border border-indigo-500/30 rounded-lg px-3 py-1.5 text-xs font-semibold text-indigo-200">
+          <span className="text-indigo-400">{t(language, 'roomCode')}:</span>
+          <span className="font-mono text-sm tracking-wider text-pink-300">{roomState.roomCode}</span>
+          <button
+            onClick={copyRoomLink}
+            title={t(language, 'copyLink')}
+            className="ml-1 p-1 hover:bg-indigo-800/50 rounded transition-colors text-indigo-300"
+          >
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+          </button>
+        </div>
+      )}
     </header>
   );
 };

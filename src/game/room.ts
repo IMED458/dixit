@@ -131,15 +131,73 @@ export class DixitRoom {
     const d = this.data;
     const idx = d.players.findIndex(p => p.id === uid);
     if (idx === -1) return {};
+    const wasStoryteller = d.storytellerPlayerId === uid;
     const [leaving] = d.players.splice(idx, 1);
     delete d.playerHands[uid];
+    // Drop any pending input from the player who left so the counts stay
+    // consistent and the remaining players aren't blocked waiting on them.
+    d.votes = d.votes.filter(v => v.voterId !== uid);
+    if (d.phase === 'PLAYERS_SELECTING') d.submissions = d.submissions.filter(s => s.playerId !== uid);
     this.say(`${leaving.displayName} დატოვა ოთახი`);
     if (d.hostPlayerId === uid && d.players.length > 0) {
       d.players[0].isHost = true; d.hostPlayerId = d.players[0].id;
       this.say(`${d.players[0].displayName} გახდა ახალი მასპინძელი`);
     }
-    if (d.players.length === 0) d._deleted = true;
+    if (d.players.length === 0) { d._deleted = true; return {}; }
+    this.recoverAfterDeparture(wasStoryteller);
     return {};
+  }
+
+  /**
+   * Keep the game moving after someone leaves mid-round — without ever forcing a
+   * move for the players who stayed. If the round can now complete on its own it
+   * advances; if the storyteller is the one who left, the round is handled
+   * gracefully instead of deadlocking.
+   */
+  private recoverAfterDeparture(wasStoryteller: boolean) {
+    const d = this.data;
+    if (d.phase === 'LOBBY' || d.phase === 'GAME_OVER') return;
+    const active = this.activePlayers();
+
+    // Not enough players left to keep playing — stop the game gracefully.
+    if (active.length < 3) {
+      d.winnerPlayerId = [...d.players].sort((a, b) => b.score - a.score)[0]?.id ?? null;
+      this.setPhase('GAME_OVER', null);
+      this.say('მოთამაშეები ვეღარ ჰყოფნის თამაშს — თამაში შეჩერდა. დანარჩენებს შეუძლიათ ახლიდან დაწყება.');
+      return;
+    }
+
+    if (wasStoryteller) {
+      if (d.phase === 'STORYTELLER_SELECTING') {
+        // Storyteller left before giving a clue — pass the role on and keep waiting.
+        d.submissions = [];
+        d.storytellerPlayerId = active[0].id;
+        this.say(`მთხრობელი გავიდა. ახალი მთხრობელია: ${this.getPlayer(d.storytellerPlayerId)?.displayName || ''}. თამაში გრძელდება.`);
+      } else {
+        // Clue already given but the storyteller is gone — abandon this round
+        // (no fair way to score it) and deal a fresh one for the others.
+        this.say('მთხრობელი გავიდა — მიმდინარე რაუნდი უქმდება, დანარჩენები აგრძელებენ.');
+        this.abandonRound(active[0].id);
+      }
+      return;
+    }
+
+    // A non-storyteller left: the phase may now be complete with fewer players.
+    if (d.phase === 'PLAYERS_SELECTING' && d.submissions.length >= this.nonStorytellers().length + 1) {
+      this.proceedToRevealing();
+    } else if (d.phase === 'VOTING' && d.votes.length >= this.nonStorytellers().length) {
+      this.proceedToScoring();
+    }
+  }
+
+  /** Reset the current round and restart it with a given storyteller (no score change). */
+  private abandonRound(nextStorytellerId: string) {
+    const d = this.data;
+    d.submissions = []; d.votes = []; d.clue = null; d.storytellerCardId = null; d.shuffledRevealedCards = [];
+    this.dealCards(d.settings.handSize);
+    d.storytellerPlayerId = nextStorytellerId;
+    this.setPhase('STORYTELLER_SELECTING', null);
+    this.say(`ახალი მთხრობელია: ${this.getPlayer(d.storytellerPlayerId)?.displayName || ''}.`);
   }
 
   toggleReady(uid: string): Result {
@@ -186,7 +244,9 @@ export class DixitRoom {
     d.submissions = []; d.votes = []; d.clue = null; d.storytellerCardId = null; d.shuffledRevealedCards = [];
     d.storytellerPlayerId = active[0].id;
     this.dealCards(d.settings.handSize);
-    this.setPhase('STORYTELLER_SELECTING', d.settings.clueTimer);
+    // No auto-advance timer on input phases: the game waits for the players
+    // themselves and never plays a move on anyone's behalf.
+    this.setPhase('STORYTELLER_SELECTING', null);
     this.say(`თამაში დაიწყო! რაუნდი 1. მთხრობელია: ${this.getPlayer(d.storytellerPlayerId)?.displayName || ''}`);
     return {};
   }
@@ -204,7 +264,7 @@ export class DixitRoom {
     hand.splice(cardIndex, 1);
     d.playerHands[uid] = hand;
     d.submissions = [{ playerId: uid, cardId, isStorytellerCard: true, revealPosition: -1, submittedAt: Date.now(), autoSubmitted: false }];
-    this.setPhase('PLAYERS_SELECTING', d.settings.cardTimer);
+    this.setPhase('PLAYERS_SELECTING', null);
     this.say(d.settings.requireWrittenClue ? `მთხრობელმა დაწერა მინიშნება: „${d.clue}“` : 'მთხრობელმა აირჩია ბარათი და მინიშნება სიტყვიერად თქვა');
     return {};
   }
@@ -244,7 +304,7 @@ export class DixitRoom {
       };
     });
     d.votes = [];
-    this.setPhase('VOTING', d.settings.votingTimer);
+    this.setPhase('VOTING', null);
     this.say('ყველა ბარათი არეულია და გამოვლენილია! დაიწყო ხმის მიცემა.');
   }
 
@@ -284,52 +344,25 @@ export class DixitRoom {
     const active = this.activePlayers();
     const idx = active.findIndex(p => p.id === d.storytellerPlayerId);
     d.storytellerPlayerId = active[(idx + 1) % active.length].id;
-    this.setPhase('STORYTELLER_SELECTING', d.settings.clueTimer);
+    this.setPhase('STORYTELLER_SELECTING', null);
     this.say(`რაუნდი ${d.roundNumber}. ახალი მთხრობელია: ${this.getPlayer(d.storytellerPlayerId)?.displayName || ''}`);
   }
 
-  /** Host calls this when the current phase timer (phaseEndsAt) elapses. */
+  /**
+   * Host calls this when the current phase timer (phaseEndsAt) elapses. Only the
+   * ROUND_RESULTS screen is timed — it simply advances to the next round (or ends
+   * the game). Input phases (clue / card / voting) have no timer and are never
+   * auto-completed: the engine never plays a move on a player's behalf.
+   */
   onTimerExpired(): Result {
     const d = this.data;
-    switch (d.phase) {
-      case 'STORYTELLER_SELECTING': {
-        const hand = d.playerHands[d.storytellerPlayerId || ''] || [];
-        if (hand.length > 0) {
-          const clues = ['საიდუმლო სიზმარი', 'შორეული მოგონება', 'უხილავი სამყარო', 'ფერთა თამაში', 'დროის მდინარე'];
-          this.submitClueAndCard(d.storytellerPlayerId!, clues[Math.floor(Math.random() * clues.length)], hand[0].id);
-        }
-        break;
-      }
-      case 'PLAYERS_SELECTING': {
-        this.nonStorytellers().forEach(p => {
-          if (!d.submissions.some(s => s.playerId === p.id)) {
-            const hand = d.playerHands[p.id] || [];
-            if (hand.length > 0) this.submitPlayerCard(p.id, hand[Math.floor(Math.random() * hand.length)].id);
-          }
-        });
-        if (d.phase === 'PLAYERS_SELECTING' && d.submissions.length >= this.nonStorytellers().length + 1) this.proceedToRevealing();
-        break;
-      }
-      case 'VOTING': {
-        this.nonStorytellers().forEach(p => {
-          if (!d.votes.some(v => v.voterId === p.id)) {
-            const mySub = d.submissions.find(s => s.playerId === p.id);
-            const valid = d.shuffledRevealedCards.filter(rc => !mySub || rc.cardId !== mySub.cardId);
-            if (valid.length > 0) this.submitVote(p.id, valid[Math.floor(Math.random() * valid.length)].cardId);
-          }
-        });
-        if (d.phase === 'VOTING') this.proceedToScoring();
-        break;
-      }
-      case 'ROUND_RESULTS': {
-        if (d.winnerPlayerId) {
-          this.setPhase('GAME_OVER', null);
-          const w = this.getPlayer(d.winnerPlayerId);
-          this.say(`🏆 თამაში დასრულდა! გამარჯვებულია: ${w?.displayName || ''}!`);
-        } else {
-          this.startNextRound();
-        }
-        break;
+    if (d.phase === 'ROUND_RESULTS') {
+      if (d.winnerPlayerId) {
+        this.setPhase('GAME_OVER', null);
+        const w = this.getPlayer(d.winnerPlayerId);
+        this.say(`🏆 თამაში დასრულდა! გამარჯვებულია: ${w?.displayName || ''}!`);
+      } else {
+        this.startNextRound();
       }
     }
     return {};

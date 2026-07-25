@@ -141,10 +141,12 @@ export const GameTable: React.FC<GameTableProps> = ({
 
         {/* Timer Ring & Scoreboard Toggle */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-950/80 border border-indigo-500/30 text-indigo-200 font-mono text-sm font-black">
-            <Clock className={`w-4 h-4 ${timeLeft <= 10 ? 'text-rose-400 animate-bounce' : 'text-indigo-400'}`} />
-            <span className={timeLeft <= 10 ? 'text-rose-400 font-bold' : ''}>{timeLeft}s</span>
-          </div>
+          {roomState.phaseEndsAt && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-950/80 border border-indigo-500/30 text-indigo-200 font-mono text-sm font-black">
+              <Clock className={`w-4 h-4 ${timeLeft <= 10 ? 'text-rose-400 animate-bounce' : 'text-indigo-400'}`} />
+              <span className={timeLeft <= 10 ? 'text-rose-400 font-bold' : ''}>{timeLeft}s</span>
+            </div>
+          )}
 
           <button
             onClick={() => setShowScoreboard(!showScoreboard)}

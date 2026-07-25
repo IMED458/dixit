@@ -93,6 +93,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ language, onClose }) => 
                   src={c.thumbnailUrl || c.url}
                   alt="Card"
                   referrerPolicy="no-referrer"
+                  loading="lazy"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    if (img.dataset.fallback === '1') return;
+                    img.dataset.fallback = '1';
+                    img.src = `https://picsum.photos/seed/${encodeURIComponent(c.id)}/400/600`;
+                  }}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute bottom-1 left-1 right-1 bg-slate-950/80 rounded px-1 py-0.5 text-[9px] font-mono text-purple-300 truncate text-center">

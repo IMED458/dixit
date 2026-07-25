@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { Play, CheckCircle2, Crown, Copy, Check, Settings, UserMinus, ShieldAlert, MessageSquare, Send, Smile } from 'lucide-react';
 import { ChatMessage, Language, PrivatePlayerState, PublicGameState, RoomSettings } from '../types';
 import { t } from '../i18n';
+import { copyText, roomLink } from '../utils/clipboard';
 
 interface LobbyViewProps {
   language: Language;
@@ -43,9 +44,8 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
   const activePlayers = roomState.players.filter((p) => !p.isSpectator);
   const canStart = isHost && activePlayers.length >= 3;
 
-  const copyLink = () => {
-    const url = `${window.location.origin}?room=${roomState.roomCode}`;
-    navigator.clipboard.writeText(url);
+  const copyLink = async () => {
+    await copyText(roomLink(roomState.roomCode));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -258,6 +258,20 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
             </h3>
 
             <div className="space-y-4 text-xs font-semibold text-slate-300">
+              {/* Max Players */}
+              <div className="space-y-1">
+                <label>{t(language, 'maxPlayers')}: {localSettings.maxPlayers}</label>
+                <input
+                  type="range"
+                  min="3"
+                  max="8"
+                  step="1"
+                  value={localSettings.maxPlayers}
+                  onChange={(e) => setLocalSettings({ ...localSettings, maxPlayers: Number(e.target.value) })}
+                  className="w-full accent-purple-500"
+                />
+              </div>
+
               {/* Winning Score */}
               <div className="space-y-1">
                 <label>{t(language, 'winningScore')}: {localSettings.winningScore} pts</label>

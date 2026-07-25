@@ -8,6 +8,7 @@ import { Sparkles, Volume2, VolumeX, Globe, BookOpen, Shield, Copy, Check, LogOu
 import { Language, PublicGameState } from '../types';
 import { t } from '../i18n';
 import { soundEffects } from '../utils/soundEffects';
+import { copyText, roomLink } from '../utils/clipboard';
 
 interface HeaderProps {
   language: Language;
@@ -36,17 +37,16 @@ export const Header: React.FC<HeaderProps> = ({
     setSoundEnabled(!soundEnabled);
   };
 
-  const copyRoomLink = () => {
+  const copyRoomLink = async () => {
     if (!roomState) return;
-    const url = `${window.location.origin}?room=${roomState.roomCode}`;
-    navigator.clipboard.writeText(url);
+    await copyText(roomLink(roomState.roomCode));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-900/80 border-b border-indigo-500/20 px-4 py-3 shadow-lg">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
         {/* Logo */}
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 flex items-center justify-center shadow-md shadow-purple-500/30">
@@ -64,7 +64,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Room Code Badge (if in room) */}
         {roomState && (
-          <div className="hidden sm:flex items-center gap-2 bg-indigo-950/60 border border-indigo-500/30 rounded-lg px-3 py-1.5 text-xs font-semibold text-indigo-200">
+          <div className="flex items-center gap-2 bg-indigo-950/60 border border-indigo-500/30 rounded-lg px-3 py-1.5 text-xs font-semibold text-indigo-200 order-3 sm:order-none w-full sm:w-auto justify-center">
             <span className="text-indigo-400">{t(language, 'roomCode')}:</span>
             <span className="font-mono text-sm tracking-wider text-pink-300">{roomState.roomCode}</span>
             <button
@@ -78,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({
         )}
 
         {/* Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
           {/* Connection status indicator */}
           <div
             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
@@ -121,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Admin panel button */}
           <button
             onClick={onOpenAdmin}
-            className="p-2 rounded-lg bg-purple-950/60 hover:bg-purple-900/60 border border-purple-500/30 text-purple-200 transition-colors"
+            className="hidden sm:inline-flex p-2 rounded-lg bg-purple-950/60 hover:bg-purple-900/60 border border-purple-500/30 text-purple-200 transition-colors"
             title={t(language, 'adminPanel')}
           >
             <Shield className="w-4 h-4" />

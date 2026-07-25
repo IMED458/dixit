@@ -84,6 +84,7 @@ export const GameTable: React.FC<GameTableProps> = ({
   };
 
   const selectedHandInHand = !!selectedHandCardId && myState.hand.some((c) => c.id === selectedHandCardId);
+  const selectedVoteValid = !!selectedVoteCardId && (roomState.revealedCards?.some((c) => c.cardId === selectedVoteCardId) ?? false);
 
   const handleConfirmStorytellerSelection = () => {
     if (!selectedHandCardId || (roomState.settings.requireWrittenClue && !clueInput.trim())) return;
@@ -377,7 +378,7 @@ export const GameTable: React.FC<GameTableProps> = ({
                     <span>{t(language, 'voteConfirmed')}</span>
                   </div>
                 ) : (
-                  selectedVoteCardId && (
+                  selectedVoteValid && (
                     <button
                       onClick={handleConfirmVote}
                       className="px-8 py-3 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs rounded-2xl shadow-xl transition-all"

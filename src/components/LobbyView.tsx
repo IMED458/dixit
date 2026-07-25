@@ -59,7 +59,8 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
   }, [me?.displayName, me?.avatarUrl]);
 
   const copyLink = async () => {
-    await copyText(roomLink(roomState.roomCode));
+    const ok = await copyText(roomLink(roomState.roomCode));
+    if (!ok) return;
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

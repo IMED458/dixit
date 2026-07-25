@@ -113,9 +113,6 @@ export const i18n = {
     
     // Admin
     cardLibrary: 'ბარათების ბიბლიოთეკა',
-    generateAiCard: 'ახალი AI სურათის გენერაცია',
-    aiPromptPlaceholder: 'შეიყვანეთ AI სურათის აღწერა (მაგ: surreal flying island in pastel dream)',
-    generate: 'გენერაცია',
     addCard: 'ბარათის დამატება',
     imageUrl: 'სურათის URL',
     activeCards: 'აქტიური ბარათები',
@@ -259,9 +256,6 @@ export const i18n = {
     
     // Admin
     cardLibrary: 'Card Library',
-    generateAiCard: 'Generate AI Card',
-    aiPromptPlaceholder: 'Enter AI prompt (e.g. surreal flying island in pastel dream)',
-    generate: 'Generate',
     addCard: 'Add Card',
     imageUrl: 'Image URL',
     activeCards: 'Active Cards',

@@ -37,7 +37,7 @@ export interface Card {
   title?: string;
   tags?: string[];
   category?: string;
-  provider: 'curated' | 'ai' | 'external' | 'demo';
+  provider: 'curated' | 'external' | 'demo';
   author?: string;
 }
 
@@ -55,7 +55,7 @@ export interface RoomSettings {
   publicRoom: boolean;
   allowSpectators: boolean;
   requireWrittenClue: boolean;
-  imageProvider: 'curated' | 'all' | 'ai';
+  imageProvider: 'curated' | 'all';
 }
 
 export interface CardSubmission {

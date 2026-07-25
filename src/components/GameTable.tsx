@@ -65,6 +65,27 @@ export const GameTable: React.FC<GameTableProps> = ({
     setLocalSettings(roomState.settings);
   }, [roomState.settings]);
 
+  // Reset any stale local selection whenever the round or phase changes.
+  // Without this, a card id selected in a previous round (already removed from
+  // the hand) keeps the confirm button visible, and submitting it is rejected
+  // by the engine ("you don't have that card") — making the button feel stuck.
+  useEffect(() => {
+    setSelectedHandCardId(null);
+    setSelectedVoteCardId(null);
+    setClueInput('');
+  }, [roomState.roundNumber, roomState.phase]);
+
+  // Guaranteed-visible fallback so a card never renders as a broken icon.
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement>, cardId: string) => {
+    const img = e.currentTarget;
+    if (img.dataset.fallback === '1') return;
+    img.dataset.fallback = '1';
+    img.src = `https://picsum.photos/seed/${encodeURIComponent(cardId)}/400/600`;
+  };
+
+  const selectedHandInHand = !!selectedHandCardId && myState.hand.some((c) => c.id === selectedHandCardId);
+  const selectedVoteValid = !!selectedVoteCardId && (roomState.revealedCards?.some((c) => c.cardId === selectedVoteCardId) ?? false);
+
   const handleConfirmStorytellerSelection = () => {
     if (!selectedHandCardId || (roomState.settings.requireWrittenClue && !clueInput.trim())) return;
     soundEffects.playCardSelect();
@@ -201,7 +222,7 @@ export const GameTable: React.FC<GameTableProps> = ({
                   </p>
                 )}
 
-                {selectedHandCardId && (!roomState.settings.requireWrittenClue || clueInput.trim()) && (
+                {selectedHandInHand && (!roomState.settings.requireWrittenClue || clueInput.trim()) && (
                   <button
                     onClick={handleConfirmStorytellerSelection}
                     className="px-8 py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black text-sm rounded-2xl shadow-xl shadow-purple-600/30 transform active:scale-95 transition-all"
@@ -251,7 +272,7 @@ export const GameTable: React.FC<GameTableProps> = ({
                     <p className="text-xs font-semibold text-slate-300 mb-3">
                       {t(language, 'selectCardForClue')}
                     </p>
-                    {selectedHandCardId && (
+                    {selectedHandInHand && (
                       <button
                         onClick={handleConfirmPlayerCard}
                         className="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
@@ -316,7 +337,9 @@ export const GameTable: React.FC<GameTableProps> = ({
                       src={revCard.thumbnailUrl || revCard.url}
                       alt="Revealed card"
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      onError={(e) => handleImgError(e, revCard.cardId)}
+                      className="w-full h-full object-cover bg-slate-800"
                     />
 
                     {/* Preview button on card hover */}
@@ -355,7 +378,7 @@ export const GameTable: React.FC<GameTableProps> = ({
                     <span>{t(language, 'voteConfirmed')}</span>
                   </div>
                 ) : (
-                  selectedVoteCardId && (
+                  selectedVoteValid && (
                     <button
                       onClick={handleConfirmVote}
                       className="px-8 py-3 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs rounded-2xl shadow-xl transition-all"
@@ -445,7 +468,9 @@ export const GameTable: React.FC<GameTableProps> = ({
                   src={card.thumbnailUrl || card.url}
                   alt="Hand card"
                   referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  onError={(e) => handleImgError(e, card.id)}
+                  className="w-full h-full object-cover bg-slate-800"
                 />
 
                 {/* Card zoom icon */}
@@ -479,7 +504,8 @@ export const GameTable: React.FC<GameTableProps> = ({
               src={previewCard.url}
               alt="Preview card"
               referrerPolicy="no-referrer"
-              className="max-h-[70vh] rounded-2xl object-contain shadow-xl"
+              onError={(e) => handleImgError(e, previewCard.id)}
+              className="max-h-[70vh] rounded-2xl object-contain shadow-xl bg-slate-800"
             />
           </div>
         </div>

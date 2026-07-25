@@ -71,12 +71,14 @@ export const i18n = {
     votingPrompt: 'რომელი ბარათია მთხრობელის? მიეცით ხმა!',
     cantVoteOwnCard: 'თქვენს მიერ ჩამოწერილი ბარათისთვის ხმის მიცემა არ შეგიძლიათ',
     confirmVote: 'ხმის მიცემა',
-    voteConfirmed: 'ხმა მიცემულია!',
+    voteConfirmed: 'თქვენი ხმა მიღებულია!',
     storytellerCantVote: 'თქვენ ხართ მთხრობელი. ველოდებით სხვა მოთამაშეების ხმებს...',
     
     // Results & Scoring
     roundResultsTitle: 'რაუნდის შედეგები',
     storytellerCardWas: 'მთხრობელის ნამდვილი ბარათი იყო:',
+    storytellerCardLabel: 'მთხრობელის კარტი',
+    enlarge: 'გადიდება',
     scoreBreakdown: 'ქულების გადანაწილება',
     correctGuess: 'გამოიცნო მთხრობელის ბარათი (+3)',
     allOrNoneGuessed: 'ყველამ ან არავინ გამოიცნო (სხვებს +2, მთხრობელს 0)',
@@ -214,12 +216,14 @@ export const i18n = {
     votingPrompt: 'Which card belongs to the Storyteller? Cast your vote!',
     cantVoteOwnCard: 'You cannot vote for your own submitted card',
     confirmVote: 'Cast Vote',
-    voteConfirmed: 'Vote cast!',
+    voteConfirmed: 'Your vote has been received!',
     storytellerCantVote: 'You are the Storyteller. Waiting for players to vote...',
     
     // Results & Scoring
     roundResultsTitle: 'Round Results',
     storytellerCardWas: "The Storyteller's card was:",
+    storytellerCardLabel: "Storyteller's card",
+    enlarge: 'Enlarge',
     scoreBreakdown: 'Score Breakdown',
     correctGuess: 'Guessed Storyteller card (+3)',
     allOrNoneGuessed: 'Everyone or no one guessed (Storyteller 0, others +2)',

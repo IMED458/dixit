@@ -34,6 +34,10 @@ export const GameTable: React.FC<GameTableProps> = ({
   const [clueInput, setClueInput] = useState('');
   const [selectedHandCardId, setSelectedHandCardId] = useState<string | null>(null);
   const [selectedVoteCardId, setSelectedVoteCardId] = useState<string | null>(null);
+  // Optimistic flags so the confirmation shows the instant the player taps,
+  // without waiting for the server round-trip.
+  const [locallyVoted, setLocallyVoted] = useState(false);
+  const [locallySubmitted, setLocallySubmitted] = useState(false);
   const [previewCard, setPreviewCard] = useState<Card | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [showScoreboard, setShowScoreboard] = useState<boolean>(false);
@@ -73,6 +77,8 @@ export const GameTable: React.FC<GameTableProps> = ({
     setSelectedHandCardId(null);
     setSelectedVoteCardId(null);
     setClueInput('');
+    setLocallyVoted(false);
+    setLocallySubmitted(false);
   }, [roomState.roundNumber, roomState.phase]);
 
   // Guaranteed-visible fallback so a card never renders as a broken icon.
@@ -99,12 +105,14 @@ export const GameTable: React.FC<GameTableProps> = ({
 
   const handleConfirmPlayerCard = () => {
     if (!selectedHandCardId) return;
+    setLocallySubmitted(true); // instant feedback, before the server round-trip
     soundEffects.playCardSelect();
     onSubmitPlayerCard(selectedHandCardId);
   };
 
   const handleConfirmVote = () => {
     if (!selectedVoteCardId) return;
+    setLocallyVoted(true); // instant feedback, before the server round-trip
     soundEffects.playVoteSubmitted();
     onSubmitVote(selectedVoteCardId);
   };
@@ -141,10 +149,12 @@ export const GameTable: React.FC<GameTableProps> = ({
 
         {/* Timer Ring & Scoreboard Toggle */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-950/80 border border-indigo-500/30 text-indigo-200 font-mono text-sm font-black">
-            <Clock className={`w-4 h-4 ${timeLeft <= 10 ? 'text-rose-400 animate-bounce' : 'text-indigo-400'}`} />
-            <span className={timeLeft <= 10 ? 'text-rose-400 font-bold' : ''}>{timeLeft}s</span>
-          </div>
+          {roomState.phaseEndsAt && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-950/80 border border-indigo-500/30 text-indigo-200 font-mono text-sm font-black">
+              <Clock className={`w-4 h-4 ${timeLeft <= 10 ? 'text-rose-400 animate-bounce' : 'text-indigo-400'}`} />
+              <span className={timeLeft <= 10 ? 'text-rose-400 font-bold' : ''}>{timeLeft}s</span>
+            </div>
+          )}
 
           <button
             onClick={() => setShowScoreboard(!showScoreboard)}
@@ -262,7 +272,7 @@ export const GameTable: React.FC<GameTableProps> = ({
 
             {!isStoryteller ? (
               <div className="space-y-3">
-                {myState.confirmedSubmission ? (
+                {myState.confirmedSubmission || locallySubmitted ? (
                   <div className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-bold animate-pulse">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{t(language, 'cardConfirmed')}</span>
@@ -342,7 +352,7 @@ export const GameTable: React.FC<GameTableProps> = ({
                       className="w-full h-full object-cover bg-slate-800"
                     />
 
-                    {/* Preview button on card hover */}
+                    {/* Zoom / enlarge button — always visible so it works on touch too */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -353,9 +363,10 @@ export const GameTable: React.FC<GameTableProps> = ({
                           provider: 'curated'
                         });
                       }}
-                      className="absolute top-2 right-2 p-1.5 rounded-lg bg-slate-950/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                      title={t(language, 'enlarge')}
+                      className="absolute top-2 right-2 p-1.5 rounded-lg bg-slate-950/80 hover:bg-slate-900 text-white shadow-lg border border-white/10"
                     >
-                      <Maximize2 className="w-3.5 h-3.5" />
+                      <Maximize2 className="w-4 h-4" />
                     </button>
 
                     {/* Badge for own card */}
@@ -372,8 +383,8 @@ export const GameTable: React.FC<GameTableProps> = ({
             {/* Voting Controls */}
             <div className="text-center pt-2">
               {!isStoryteller ? (
-                myState.confirmedVote ? (
-                  <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-bold">
+                myState.confirmedVote || locallyVoted ? (
+                  <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-bold animate-pulse">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>{t(language, 'voteConfirmed')}</span>
                   </div>
@@ -401,6 +412,49 @@ export const GameTable: React.FC<GameTableProps> = ({
               <h3 className="text-xl font-black text-pink-300">{t(language, 'roundResultsTitle')}</h3>
               <p className="text-xs text-slate-300 mt-1">{t(language, 'storytellerCardWas')}</p>
             </div>
+
+            {/* Storyteller's actual card, revealed and highlighted */}
+            {roomState.storytellerCardId && roomState.revealedCards && (() => {
+              const stCard = roomState.revealedCards.find((c) => c.cardId === roomState.storytellerCardId);
+              if (!stCard) return null;
+              return (
+                <div className="flex flex-col items-center gap-4">
+                  <div className="relative">
+                    <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 z-10 px-3 py-0.5 rounded-full bg-purple-600 text-white text-[10px] font-black uppercase tracking-wider shadow-lg whitespace-nowrap">
+                      {t(language, 'storytellerCardLabel')}
+                    </div>
+                    <img
+                      src={stCard.thumbnailUrl || stCard.url}
+                      alt="Storyteller card"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => handleImgError(e, stCard.cardId)}
+                      onClick={() => setPreviewCard({ id: stCard.cardId, url: stCard.url, thumbnailUrl: stCard.thumbnailUrl, provider: 'curated' })}
+                      className="w-40 h-56 sm:w-44 sm:h-60 object-cover rounded-2xl border-2 border-purple-400 shadow-2xl shadow-purple-500/40 cursor-zoom-in"
+                    />
+                  </div>
+
+                  {/* All revealed cards, storyteller's highlighted; tap any to enlarge */}
+                  <div className="flex gap-2 overflow-x-auto max-w-full pb-1 no-scrollbar">
+                    {roomState.revealedCards.map((c) => {
+                      const isStoryteller = c.cardId === roomState.storytellerCardId;
+                      return (
+                        <img
+                          key={c.cardId}
+                          src={c.thumbnailUrl || c.url}
+                          alt="Round card"
+                          referrerPolicy="no-referrer"
+                          onError={(e) => handleImgError(e, c.cardId)}
+                          onClick={() => setPreviewCard({ id: c.cardId, url: c.url, thumbnailUrl: c.thumbnailUrl, provider: 'curated' })}
+                          className={`w-14 h-20 flex-shrink-0 object-cover rounded-lg cursor-zoom-in border-2 transition-all ${
+                            isStoryteller ? 'border-purple-400 ring-2 ring-purple-400/50' : 'border-slate-700 opacity-60 hover:opacity-100'
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Results Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
@@ -473,15 +527,16 @@ export const GameTable: React.FC<GameTableProps> = ({
                   className="w-full h-full object-cover bg-slate-800"
                 />
 
-                {/* Card zoom icon */}
+                {/* Card zoom icon — always visible so it works on touch too */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setPreviewCard(card);
                   }}
-                  className="absolute top-1.5 right-1.5 p-1 rounded bg-slate-950/80 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                  title={t(language, 'enlarge')}
+                  className="absolute top-1.5 right-1.5 p-1.5 rounded-lg bg-slate-950/80 hover:bg-slate-900 text-white shadow-lg border border-white/10"
                 >
-                  <Maximize2 className="w-3 h-3" />
+                  <Maximize2 className="w-4 h-4" />
                 </button>
               </div>
             );

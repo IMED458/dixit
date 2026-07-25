@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore } from 'firebase/firestore';
 import { getAuth, signInAnonymously, onAuthStateChanged, User } from 'firebase/auth';
 
 // Public by design — security is enforced by Firestore rules (firestore.rules).
@@ -14,7 +14,15 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+
+// Auto-detect long polling: on some mobile networks / proxies the Firestore
+// streaming (WebChannel) transport gets blocked, so onSnapshot stops receiving
+// live updates (host never sees new players, "ready" never syncs) and the
+// console logs 404s from the channel endpoint. Auto-detect falls back to long
+// polling on those networks while keeping streaming where it works.
+export const db = initializeFirestore(app, {
+  experimentalAutoDetectLongPolling: true,
+});
 export const auth = getAuth(app);
 
 let signInPromise: Promise<User> | null = null;

@@ -7,8 +7,7 @@
  * Players are keyed by their Firebase Auth uid (was: generated playerId).
  * All state is plain/serialisable (no Map/Set) so it round-trips through
  * Firestore. Phase timers are not run here — the host schedules
- * onTimerExpired() from phaseEndsAt. AI card generation is removed; the deck
- * is the curated DEFAULT_CARDS set.
+ * onTimerExpired() from phaseEndsAt. The deck is the curated DEFAULT_CARDS set.
  */
 import {
   Card, CardSubmission, CardVote, ChatMessage, GamePhase, Player,
@@ -45,6 +44,7 @@ export interface DixitState {
 
 export type Result = { error?: string };
 const POOL: Card[] = DEFAULT_CARDS;
+const GAME_DECK_SIZE = 84;
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -56,8 +56,12 @@ export const DEFAULT_SETTINGS: RoomSettings = {
   maxPlayers: 8, winningScore: 30, maxRounds: 10, handSize: 6,
   clueTimer: 60, cardTimer: 60, votingTimer: 45, resultsTimer: 12,
   language: 'ka', threePlayerVariant: false, publicRoom: true,
-  allowSpectators: true, imageProvider: 'all',
+  allowSpectators: true, requireWrittenClue: false, imageProvider: 'all',
 };
+
+function selectGameDeck(): Card[] {
+  return shuffle(POOL).slice(0, Math.min(GAME_DECK_SIZE, POOL.length));
+}
 
 export class DixitRoom {
   data: DixitState;
@@ -77,7 +81,7 @@ export class DixitRoom {
       hostPlayerId: hostUid, phase: 'LOBBY', roundNumber: 0,
       storytellerPlayerId: null, clue: null, storytellerCardId: null,
       players: [host], settings: { ...DEFAULT_SETTINGS, ...settings },
-      deck: shuffle(POOL), usedCardIds: [], playerHands: {},
+      deck: selectGameDeck(), usedCardIds: [], playerHands: {},
       submissions: [], shuffledRevealedCards: [], votes: [],
       lastRoundScores: null, winnerPlayerId: null,
       phaseStartedAt: Date.now(), phaseEndsAt: null, gameHistoryCount: 0,
@@ -146,7 +150,24 @@ export class DixitRoom {
 
   updateSettings(uid: string, s: Partial<RoomSettings>): Result {
     const d = this.data;
-    if (d.hostPlayerId === uid && d.phase === 'LOBBY') d.settings = { ...d.settings, ...s };
+    if (d.hostPlayerId !== uid) return {};
+    const next = { ...d.settings, ...s };
+    if (d.phase !== 'LOBBY') {
+      next.maxPlayers = d.settings.maxPlayers;
+      next.handSize = d.settings.handSize;
+      next.threePlayerVariant = d.settings.threePlayerVariant;
+    }
+    d.settings = next;
+    return {};
+  }
+
+  updateProfile(uid: string, displayName: string, avatarUrl: string): Result {
+    const p = this.getPlayer(uid);
+    if (!p || this.data.phase !== 'LOBBY') return {};
+    const nextName = displayName.trim().substring(0, 32);
+    const nextAvatar = avatarUrl.trim().substring(0, 16);
+    if (nextName) p.displayName = nextName;
+    if (nextAvatar) p.avatarUrl = nextAvatar;
     return {};
   }
 
@@ -157,7 +178,7 @@ export class DixitRoom {
     if (active.length < 3) return { error: 'თამაშის დასაწყებად საჭიროა მინიმუმ 3 მოთამაშე!' };
     d.players.forEach(p => { p.score = 0; p.isReady = true; });
     d.roundNumber = 1;
-    d.deck = shuffle(POOL);
+    d.deck = selectGameDeck();
     d.usedCardIds = [];
     d.playerHands = {};
     d.winnerPlayerId = null;
@@ -176,13 +197,15 @@ export class DixitRoom {
     const hand = d.playerHands[uid] || [];
     const cardIndex = hand.findIndex(c => c.id === cardId);
     if (cardIndex === -1) return { error: 'ეს ბარათი არ გაქვთ ხელში!' };
-    d.clue = clue.trim().substring(0, 120) || 'საიდუმლო სიზმარი';
+    const nextClue = clue.trim().substring(0, 120);
+    if (d.settings.requireWrittenClue && !nextClue) return { error: 'ჩაწერეთ მინიშნება' };
+    d.clue = nextClue || 'მინიშნება ითქვა სიტყვიერად';
     d.storytellerCardId = cardId;
     hand.splice(cardIndex, 1);
     d.playerHands[uid] = hand;
     d.submissions = [{ playerId: uid, cardId, isStorytellerCard: true, revealPosition: -1, submittedAt: Date.now(), autoSubmitted: false }];
     this.setPhase('PLAYERS_SELECTING', d.settings.cardTimer);
-    this.say(`მთხრობელმა დაწერა მინიშნება: „${d.clue}“`);
+    this.say(d.settings.requireWrittenClue ? `მთხრობელმა დაწერა მინიშნება: „${d.clue}“` : 'მთხრობელმა აირჩია ბარათი და მინიშნება სიტყვიერად თქვა');
     return {};
   }
 
@@ -195,7 +218,7 @@ export class DixitRoom {
     if (cardIndex === -1 && existingSubIndex === -1) return { error: 'ეს ბარათი არ გაქვთ ხელში!' };
     if (existingSubIndex !== -1) {
       const oldSub = d.submissions[existingSubIndex];
-      const oldCard = POOL.find(c => c.id === oldSub.cardId);
+      const oldCard = this.activeCardPool().find(c => c.id === oldSub.cardId);
       if (oldCard) hand.push(oldCard);
       d.submissions.splice(existingSubIndex, 1);
     }
@@ -212,7 +235,7 @@ export class DixitRoom {
     const shuffledSubs = shuffle([...d.submissions]);
     d.shuffledRevealedCards = shuffledSubs.map((sub, index) => {
       sub.revealPosition = index;
-      const cardObj = POOL.find(c => c.id === sub.cardId);
+      const cardObj = this.activeCardPool().find(c => c.id === sub.cardId);
       return {
         cardId: sub.cardId,
         url: cardObj ? cardObj.url : 'https://picsum.photos/800/1000',
@@ -322,7 +345,7 @@ export class DixitRoom {
         if (d.deck.length === 0) {
           const held = new Set<string>();
           Object.values(d.playerHands).forEach(h => h.forEach(c => held.add(c.id)));
-          d.deck = shuffle(POOL.filter(c => !held.has(c.id)));
+          d.deck = shuffle(this.activeCardPool().filter(c => !held.has(c.id)));
         }
         if (d.deck.length > 0) { const drawn = d.deck.pop()!; hand.push(drawn); used.add(drawn.id); }
       }
@@ -368,6 +391,16 @@ export class DixitRoom {
       confirmedVote: !!myVote,
       reconnectToken: uid,
     };
+  }
+
+  private activeCardPool(): Card[] {
+    const ids = new Set([
+      ...this.data.deck.map((c) => c.id),
+      ...this.data.usedCardIds,
+      ...Object.values(this.data.playerHands).flat().map((c) => c.id),
+    ]);
+    const pool = POOL.filter((c) => ids.has(c.id));
+    return pool.length ? pool : POOL;
   }
 }
 

@@ -11,7 +11,7 @@
  * back to the legacy `execCommand('copy')` textarea trick. Returns whether the
  * copy actually succeeded so callers only show a success state on success.
  */
-export async function copyToClipboard(text: string): Promise<boolean> {
+export async function copyText(text: string): Promise<boolean> {
   // Preferred path: async Clipboard API (needs a secure context).
   try {
     if (typeof navigator !== 'undefined' && navigator.clipboard && window.isSecureContext) {
@@ -45,4 +45,9 @@ export async function copyToClipboard(text: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+/** Full shareable URL to a room, preserving the app's base path (e.g. /dixit/). */
+export function roomLink(roomCode: string): string {
+  return `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
 }

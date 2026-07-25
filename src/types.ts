@@ -37,7 +37,7 @@ export interface Card {
   title?: string;
   tags?: string[];
   category?: string;
-  provider: 'curated' | 'ai' | 'external' | 'demo';
+  provider: 'curated' | 'external' | 'demo';
   author?: string;
 }
 
@@ -54,7 +54,8 @@ export interface RoomSettings {
   threePlayerVariant: boolean;
   publicRoom: boolean;
   allowSpectators: boolean;
-  imageProvider: 'curated' | 'all' | 'ai';
+  requireWrittenClue: boolean;
+  imageProvider: 'curated' | 'all';
 }
 
 export interface CardSubmission {
@@ -177,6 +178,7 @@ export type ClientToServerAction =
   | { type: 'LEAVE_ROOM' }
   | { type: 'TOGGLE_READY' }
   | { type: 'UPDATE_SETTINGS'; settings: Partial<RoomSettings> }
+  | { type: 'UPDATE_PROFILE'; displayName: string; avatarUrl: string }
   | { type: 'START_GAME' }
   | { type: 'SUBMIT_CLUE_AND_CARD'; clue: string; cardId: string }
   | { type: 'SUBMIT_PLAYER_CARD'; cardId: string }

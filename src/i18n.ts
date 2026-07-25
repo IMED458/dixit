@@ -44,6 +44,7 @@ export const i18n = {
     send: 'გაგზავნა',
     typeMessage: 'ჩაწერთ შეტყობინება...',
     reactions: 'რეაქციები',
+    saveProfile: 'შენახვა',
     
     // Game phases
     phaseLobby: 'ლობი',
@@ -106,13 +107,12 @@ export const i18n = {
     maxPlayers: 'მაქსიმალური მოთამაშეები',
     threePlayerVariant: '3-მოთამაშიანი სპეც-ვარიანტი (7 ბარათი/2 არჩევანი)',
     publicRoomLabel: 'საჯარო ოთახი',
+    writtenClueLabel: 'მინიშნების ჩაწერა',
+    verbalClueNotice: 'მინიშნება სიტყვიერად თქვით და აირჩიეთ ბარათი.',
     saveSettings: 'პარამეტრების შენახვა',
     
     // Admin
     cardLibrary: 'ბარათების ბიბლიოთეკა',
-    generateAiCard: 'ახალი AI სურათის გენერაცია',
-    aiPromptPlaceholder: 'შეიყვანეთ AI სურათის აღწერა (მაგ: surreal flying island in pastel dream)',
-    generate: 'გენერაცია',
     addCard: 'ბარათის დამატება',
     imageUrl: 'სურათის URL',
     activeCards: 'აქტიური ბარათები',
@@ -187,6 +187,7 @@ export const i18n = {
     send: 'Send',
     typeMessage: 'Type a message...',
     reactions: 'Reactions',
+    saveProfile: 'Save',
     
     // Game phases
     phaseLobby: 'Lobby',
@@ -249,13 +250,12 @@ export const i18n = {
     maxPlayers: 'Max Players',
     threePlayerVariant: '3-Player Special Variant (7 cards/2 submissions)',
     publicRoomLabel: 'Public Room',
+    writtenClueLabel: 'Written clue input',
+    verbalClueNotice: 'Say the clue out loud and select a card.',
     saveSettings: 'Save Settings',
     
     // Admin
     cardLibrary: 'Card Library',
-    generateAiCard: 'Generate AI Card',
-    aiPromptPlaceholder: 'Enter AI prompt (e.g. surreal flying island in pastel dream)',
-    generate: 'Generate',
     addCard: 'Add Card',
     imageUrl: 'Image URL',
     activeCards: 'Active Cards',

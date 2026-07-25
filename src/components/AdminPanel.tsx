@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { X, Shield, Plus, Sparkles, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { X, Shield, Plus } from 'lucide-react';
 import { Card, Language } from '../types';
 import { t } from '../i18n';
 import { DEFAULT_CARDS } from '../data/defaultCards';
@@ -18,8 +18,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ language, onClose }) => 
   const [cards, setCards] = useState<Card[]>([]);
   const [loadingCards, setLoadingCards] = useState(false);
   const [customUrl, setCustomUrl] = useState('');
-  const [aiPrompt, setAiPrompt] = useState('');
-  const [generatingAi, setGeneratingAi] = useState(false);
 
   useEffect(() => {
     fetchCards();
@@ -44,28 +42,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ language, onClose }) => 
     setCustomUrl('');
   };
 
-  const handleGenerateAiCard = async () => {
-    setGeneratingAi(true);
-    try {
-      const res = await fetch('/api/ai-card', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: aiPrompt.trim() })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.card) {
-          setCards([data.card, ...cards]);
-          setAiPrompt('');
-        }
-      }
-    } catch (err) {
-      console.warn('AI gen error', err);
-    } finally {
-      setGeneratingAi(false);
-    }
-  };
-
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4">
       <div className="relative max-w-4xl w-full bg-slate-900 border border-purple-500/30 rounded-3xl p-6 shadow-2xl max-h-[90vh] flex flex-col space-y-5">
@@ -81,32 +57,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ language, onClose }) => 
           >
             <X className="w-5 h-5" />
           </button>
-        </div>
-
-        {/* AI Card Generator Bar */}
-        <div className="bg-slate-950/80 border border-purple-500/30 rounded-2xl p-4 space-y-3">
-          <h4 className="text-xs font-bold text-pink-300 uppercase tracking-widest flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-purple-400" />
-            <span>{t(language, 'generateAiCard')}</span>
-          </h4>
-
-          <div className="flex flex-col sm:flex-row gap-2">
-            <input
-              type="text"
-              value={aiPrompt}
-              onChange={(e) => setAiPrompt(e.target.value)}
-              placeholder={t(language, 'aiPromptPlaceholder')}
-              className="flex-1 bg-slate-900 border border-indigo-500/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
-            />
-            <button
-              onClick={handleGenerateAiCard}
-              disabled={generatingAi}
-              className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-md transition-all"
-            >
-              {generatingAi ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              <span>{t(language, 'generate')}</span>
-            </button>
-          </div>
         </div>
 
         {/* Custom URL Card Bar */}
@@ -143,6 +93,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ language, onClose }) => 
                   src={c.thumbnailUrl || c.url}
                   alt="Card"
                   referrerPolicy="no-referrer"
+                  loading="lazy"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    if (img.dataset.fallback === '1') return;
+                    img.dataset.fallback = '1';
+                    img.src = `https://picsum.photos/seed/${encodeURIComponent(c.id)}/400/600`;
+                  }}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute bottom-1 left-1 right-1 bg-slate-950/80 rounded px-1 py-0.5 text-[9px] font-mono text-purple-300 truncate text-center">

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Play, CheckCircle2, Crown, Copy, Check, Settings, UserMinus, ShieldAlert, MessageSquare, Send, Smile } from 'lucide-react';
 import { ChatMessage, Language, PrivatePlayerState, PublicGameState, RoomSettings } from '../types';
 import { t } from '../i18n';
-import { copyToClipboard } from '../utils/clipboard';
+import { copyText, roomLink } from '../utils/clipboard';
 
 interface LobbyViewProps {
   language: Language;
@@ -16,6 +16,7 @@ interface LobbyViewProps {
   onToggleReady: () => void;
   onStartGame: () => void;
   onUpdateSettings: (settings: Partial<RoomSettings>) => void;
+  onUpdateProfile: (displayName: string, avatarUrl: string) => void;
   onSendChat: (message: string) => void;
   onSendReaction: (emoji: string) => void;
   chatMessages: ChatMessage[];
@@ -30,6 +31,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
   onToggleReady,
   onStartGame,
   onUpdateSettings,
+  onUpdateProfile,
   onSendChat,
   onSendReaction,
   chatMessages
@@ -38,15 +40,26 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [localSettings, setLocalSettings] = useState<RoomSettings>(roomState.settings);
+  const [profileName, setProfileName] = useState('');
+  const [profileAvatar, setProfileAvatar] = useState('');
 
   const me = roomState.players.find((p) => p.id === myState.playerId);
   const isHost = me?.isHost || false;
   const activePlayers = roomState.players.filter((p) => !p.isSpectator);
   const canStart = isHost && activePlayers.length >= 3;
 
+  useEffect(() => {
+    setLocalSettings(roomState.settings);
+  }, [roomState.settings]);
+
+  useEffect(() => {
+    if (!me) return;
+    setProfileName(me.displayName);
+    setProfileAvatar(me.avatarUrl);
+  }, [me?.displayName, me?.avatarUrl]);
+
   const copyLink = async () => {
-    const url = `${window.location.origin}?room=${roomState.roomCode}`;
-    const ok = await copyToClipboard(url);
+    const ok = await copyText(roomLink(roomState.roomCode));
     if (!ok) return;
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -62,6 +75,12 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
     if (!chatInput.trim()) return;
     onSendChat(chatInput);
     setChatInput('');
+  };
+
+  const handleSaveProfile = () => {
+    onUpdateProfile(profileName, profileAvatar);
+    localStorage.setItem('dreamclue_name', profileName);
+    localStorage.setItem('dreamclue_avatar', profileAvatar);
   };
 
   return (
@@ -143,6 +162,33 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
                 <span className="text-sm font-bold text-white truncate max-w-[120px]">
                   {p.displayName} {p.id === myState.playerId && `(${t(language, 'you')})`}
                 </span>
+
+                {p.id === myState.playerId && (
+                  <div className="w-full mt-3 space-y-2">
+                    <input
+                      type="text"
+                      value={profileName}
+                      onChange={(e) => setProfileName(e.target.value)}
+                      maxLength={32}
+                      className="w-full bg-slate-950/80 border border-indigo-500/30 rounded-lg px-2 py-1 text-xs text-white text-center focus:outline-none focus:border-purple-400"
+                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={profileAvatar}
+                        onChange={(e) => setProfileAvatar(e.target.value)}
+                        maxLength={16}
+                        className="w-12 bg-slate-950/80 border border-indigo-500/30 rounded-lg px-2 py-1 text-xs text-white text-center focus:outline-none focus:border-purple-400"
+                      />
+                      <button
+                        onClick={handleSaveProfile}
+                        className="flex-1 px-2 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-[11px] font-bold transition-colors"
+                      >
+                        {t(language, 'saveProfile')}
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Status Badge */}
                 <div className="mt-2">
@@ -253,109 +299,155 @@ export const LobbyView: React.FC<LobbyViewProps> = ({
 
       {/* Room Settings Modal */}
       {showSettingsModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-purple-500/30 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5">
-            <h3 className="text-lg font-bold text-white border-b border-indigo-500/20 pb-3">
-              {t(language, 'settings')}
-            </h3>
-
-            <div className="space-y-4 text-xs font-semibold text-slate-300">
-              {/* Winning Score */}
-              <div className="space-y-1">
-                <label>{t(language, 'winningScore')}: {localSettings.winningScore} pts</label>
-                <input
-                  type="range"
-                  min="15"
-                  max="50"
-                  step="5"
-                  value={localSettings.winningScore}
-                  onChange={(e) => setLocalSettings({ ...localSettings, winningScore: Number(e.target.value) })}
-                  className="w-full accent-purple-500"
-                />
-              </div>
-
-              {/* Clue Timer */}
-              <div className="space-y-1">
-                <label>{t(language, 'clueTimer')}: {localSettings.clueTimer}s</label>
-                <input
-                  type="range"
-                  min="30"
-                  max="120"
-                  step="15"
-                  value={localSettings.clueTimer}
-                  onChange={(e) => setLocalSettings({ ...localSettings, clueTimer: Number(e.target.value) })}
-                  className="w-full accent-purple-500"
-                />
-              </div>
-
-              {/* Card Timer */}
-              <div className="space-y-1">
-                <label>{t(language, 'cardTimer')}: {localSettings.cardTimer}s</label>
-                <input
-                  type="range"
-                  min="30"
-                  max="120"
-                  step="15"
-                  value={localSettings.cardTimer}
-                  onChange={(e) => setLocalSettings({ ...localSettings, cardTimer: Number(e.target.value) })}
-                  className="w-full accent-purple-500"
-                />
-              </div>
-
-              {/* Voting Timer */}
-              <div className="space-y-1">
-                <label>{t(language, 'votingTimer')}: {localSettings.votingTimer}s</label>
-                <input
-                  type="range"
-                  min="20"
-                  max="90"
-                  step="10"
-                  value={localSettings.votingTimer}
-                  onChange={(e) => setLocalSettings({ ...localSettings, votingTimer: Number(e.target.value) })}
-                  className="w-full accent-purple-500"
-                />
-              </div>
-
-              {/* 3-player variant */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-800">
-                <span>{t(language, 'threePlayerVariant')}</span>
-                <input
-                  type="checkbox"
-                  checked={localSettings.threePlayerVariant}
-                  onChange={(e) => setLocalSettings({ ...localSettings, threePlayerVariant: e.target.checked })}
-                  className="w-4 h-4 accent-purple-500 rounded"
-                />
-              </div>
-
-              {/* Public room */}
-              <div className="flex items-center justify-between">
-                <span>{t(language, 'publicRoomLabel')}</span>
-                <input
-                  type="checkbox"
-                  checked={localSettings.publicRoom}
-                  onChange={(e) => setLocalSettings({ ...localSettings, publicRoom: e.target.checked })}
-                  className="w-4 h-4 accent-purple-500 rounded"
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4 border-t border-indigo-500/20">
-              <button
-                onClick={() => setShowSettingsModal(false)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold"
-              >
-                გაუქმება
-              </button>
-              <button
-                onClick={handleSaveSettings}
-                className="px-6 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold shadow-md"
-              >
-                {t(language, 'saveSettings')}
-              </button>
-            </div>
-          </div>
-        </div>
+        <RoomSettingsModal
+          language={language}
+          settings={localSettings}
+          onChange={setLocalSettings}
+          onCancel={() => setShowSettingsModal(false)}
+          onSave={handleSaveSettings}
+          lockPlayerSetup={roomState.phase !== 'LOBBY'}
+        />
       )}
     </div>
   );
 };
+
+interface RoomSettingsModalProps {
+  language: Language;
+  settings: RoomSettings;
+  onChange: (settings: RoomSettings) => void;
+  onCancel: () => void;
+  onSave: () => void;
+  lockPlayerSetup?: boolean;
+}
+
+export const RoomSettingsModal: React.FC<RoomSettingsModalProps> = ({
+  language,
+  settings,
+  onChange,
+  onCancel,
+  onSave,
+  lockPlayerSetup = false
+}) => (
+  <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div className="bg-slate-900 border border-purple-500/30 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5">
+      <h3 className="text-lg font-bold text-white border-b border-indigo-500/20 pb-3">
+        {t(language, 'settings')}
+      </h3>
+
+      <div className="space-y-4 text-xs font-semibold text-slate-300">
+        <div className="space-y-1">
+          <label>{t(language, 'maxPlayers')}: {settings.maxPlayers}</label>
+          <input
+            type="range"
+            min="3"
+            max="8"
+            step="1"
+            value={settings.maxPlayers}
+            disabled={lockPlayerSetup}
+            onChange={(e) => onChange({ ...settings, maxPlayers: Number(e.target.value) })}
+            className="w-full accent-purple-500 disabled:opacity-40"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label>{t(language, 'winningScore')}: {settings.winningScore} pts</label>
+          <input
+            type="range"
+            min="15"
+            max="50"
+            step="5"
+            value={settings.winningScore}
+            onChange={(e) => onChange({ ...settings, winningScore: Number(e.target.value) })}
+            className="w-full accent-purple-500"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label>{t(language, 'clueTimer')}: {settings.clueTimer}s</label>
+          <input
+            type="range"
+            min="30"
+            max="120"
+            step="15"
+            value={settings.clueTimer}
+            onChange={(e) => onChange({ ...settings, clueTimer: Number(e.target.value) })}
+            className="w-full accent-purple-500"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label>{t(language, 'cardTimer')}: {settings.cardTimer}s</label>
+          <input
+            type="range"
+            min="30"
+            max="120"
+            step="15"
+            value={settings.cardTimer}
+            onChange={(e) => onChange({ ...settings, cardTimer: Number(e.target.value) })}
+            className="w-full accent-purple-500"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label>{t(language, 'votingTimer')}: {settings.votingTimer}s</label>
+          <input
+            type="range"
+            min="20"
+            max="90"
+            step="10"
+            value={settings.votingTimer}
+            onChange={(e) => onChange({ ...settings, votingTimer: Number(e.target.value) })}
+            className="w-full accent-purple-500"
+          />
+        </div>
+
+        <div className="flex items-center justify-between pt-2 border-t border-slate-800">
+          <span>{t(language, 'threePlayerVariant')}</span>
+          <input
+            type="checkbox"
+            checked={settings.threePlayerVariant}
+            disabled={lockPlayerSetup}
+            onChange={(e) => onChange({ ...settings, threePlayerVariant: e.target.checked })}
+            className="w-4 h-4 accent-purple-500 rounded disabled:opacity-40"
+          />
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span>{t(language, 'writtenClueLabel')}</span>
+          <input
+            type="checkbox"
+            checked={settings.requireWrittenClue}
+            onChange={(e) => onChange({ ...settings, requireWrittenClue: e.target.checked })}
+            className="w-4 h-4 accent-purple-500 rounded"
+          />
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span>{t(language, 'publicRoomLabel')}</span>
+          <input
+            type="checkbox"
+            checked={settings.publicRoom}
+            onChange={(e) => onChange({ ...settings, publicRoom: e.target.checked })}
+            className="w-4 h-4 accent-purple-500 rounded"
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-4 border-t border-indigo-500/20">
+        <button
+          onClick={onCancel}
+          className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold"
+        >
+          გაუქმება
+        </button>
+        <button
+          onClick={onSave}
+          className="px-6 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold shadow-md"
+        >
+          {t(language, 'saveSettings')}
+        </button>
+      </div>
+    </div>
+  </div>
+);

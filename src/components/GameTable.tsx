@@ -4,10 +4,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Clock, CheckCircle2, Lock, Eye, Award, Maximize2, X, Send, Smile, AlertCircle } from 'lucide-react';
-import { Card, Language, PrivatePlayerState, PublicGameState, RoundScoreDetail } from '../types';
+import { Sparkles, Clock, CheckCircle2, Award, Maximize2, X, Settings } from 'lucide-react';
+import { Card, Language, PrivatePlayerState, PublicGameState, RoomSettings } from '../types';
 import { t } from '../i18n';
 import { soundEffects } from '../utils/soundEffects';
+import { RoomSettingsModal } from './LobbyView';
 
 interface GameTableProps {
   language: Language;
@@ -16,6 +17,7 @@ interface GameTableProps {
   onSubmitClueAndCard: (clue: string, cardId: string) => void;
   onSubmitPlayerCard: (cardId: string) => void;
   onSubmitVote: (cardId: string) => void;
+  onUpdateSettings: (settings: Partial<RoomSettings>) => void;
   onSendReaction: (emoji: string) => void;
 }
 
@@ -26,6 +28,7 @@ export const GameTable: React.FC<GameTableProps> = ({
   onSubmitClueAndCard,
   onSubmitPlayerCard,
   onSubmitVote,
+  onUpdateSettings,
   onSendReaction
 }) => {
   const [clueInput, setClueInput] = useState('');
@@ -34,9 +37,13 @@ export const GameTable: React.FC<GameTableProps> = ({
   const [previewCard, setPreviewCard] = useState<Card | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [showScoreboard, setShowScoreboard] = useState<boolean>(false);
+  const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
+  const [localSettings, setLocalSettings] = useState<RoomSettings>(roomState.settings);
 
   const isStoryteller = roomState.storytellerPlayerId === myState.playerId;
   const storytellerObj = roomState.players.find((p) => p.id === roomState.storytellerPlayerId);
+  const me = roomState.players.find((p) => p.id === myState.playerId);
+  const isHost = me?.isHost || false;
 
   // Timer Countdown Logic
   useEffect(() => {
@@ -54,10 +61,40 @@ export const GameTable: React.FC<GameTableProps> = ({
     return () => clearInterval(interval);
   }, [roomState.phaseEndsAt]);
 
+  useEffect(() => {
+    setLocalSettings(roomState.settings);
+  }, [roomState.settings]);
+
+  // Reset any stale local selection whenever the round or phase changes.
+  // Without this, a card id selected in a previous round (already removed from
+  // the hand) keeps the confirm button visible, and submitting it is rejected
+  // by the engine ("you don't have that card") — making the button feel stuck.
+  useEffect(() => {
+    setSelectedHandCardId(null);
+    setSelectedVoteCardId(null);
+    setClueInput('');
+  }, [roomState.roundNumber, roomState.phase]);
+
+  // Guaranteed-visible fallback so a card never renders as a broken icon.
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement>, cardId: string) => {
+    const img = e.currentTarget;
+    if (img.dataset.fallback === '1') return;
+    img.dataset.fallback = '1';
+    img.src = `https://picsum.photos/seed/${encodeURIComponent(cardId)}/400/600`;
+  };
+
+  const selectedHandInHand = !!selectedHandCardId && myState.hand.some((c) => c.id === selectedHandCardId);
+  const selectedVoteValid = !!selectedVoteCardId && (roomState.revealedCards?.some((c) => c.cardId === selectedVoteCardId) ?? false);
+
   const handleConfirmStorytellerSelection = () => {
-    if (!clueInput.trim() || !selectedHandCardId) return;
+    if (!selectedHandCardId || (roomState.settings.requireWrittenClue && !clueInput.trim())) return;
     soundEffects.playCardSelect();
     onSubmitClueAndCard(clueInput.trim(), selectedHandCardId);
+  };
+
+  const handleSaveSettings = () => {
+    onUpdateSettings(localSettings);
+    setShowSettingsModal(false);
   };
 
   const handleConfirmPlayerCard = () => {
@@ -116,6 +153,16 @@ export const GameTable: React.FC<GameTableProps> = ({
             <Award className="w-4 h-4 text-purple-400" />
             <span>რეიტინგი</span>
           </button>
+
+          {isHost && (
+            <button
+              onClick={() => setShowSettingsModal(true)}
+              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-indigo-500/30 text-indigo-200 text-xs font-bold flex items-center gap-1.5"
+            >
+              <Settings className="w-4 h-4 text-purple-400" />
+              <span>{t(language, 'settings')}</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -155,22 +202,27 @@ export const GameTable: React.FC<GameTableProps> = ({
                   <span>{t(language, 'cluePrompt')}</span>
                 </div>
 
-                {/* Clue Input */}
-                <div className="space-y-2">
-                  <input
-                    type="text"
-                    value={clueInput}
-                    onChange={(e) => setClueInput(e.target.value)}
-                    maxLength={120}
-                    placeholder={t(language, 'cluePlaceholder')}
-                    className="w-full bg-slate-950/90 border-2 border-purple-500/40 focus:border-pink-400 rounded-2xl px-5 py-4 text-center font-bold text-lg text-pink-200 focus:outline-none shadow-xl"
-                  />
-                  <p className="text-[11px] text-slate-400">
-                    რჩევა: მინიშნება არ უნდა იყოს არც ზედმეტად მარტივი და არც ზედმეტად რთული!
+                {roomState.settings.requireWrittenClue ? (
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      value={clueInput}
+                      onChange={(e) => setClueInput(e.target.value)}
+                      maxLength={120}
+                      placeholder={t(language, 'cluePlaceholder')}
+                      className="w-full bg-slate-950/90 border-2 border-purple-500/40 focus:border-pink-400 rounded-2xl px-5 py-4 text-center font-bold text-lg text-pink-200 focus:outline-none shadow-xl"
+                    />
+                    <p className="text-[11px] text-slate-400">
+                      რჩევა: მინიშნება არ უნდა იყოს არც ზედმეტად მარტივი და არც ზედმეტად რთული!
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-xs font-semibold text-slate-300">
+                    {t(language, 'verbalClueNotice')}
                   </p>
-                </div>
+                )}
 
-                {selectedHandCardId && clueInput.trim() && (
+                {selectedHandInHand && (!roomState.settings.requireWrittenClue || clueInput.trim()) && (
                   <button
                     onClick={handleConfirmStorytellerSelection}
                     className="px-8 py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black text-sm rounded-2xl shadow-xl shadow-purple-600/30 transform active:scale-95 transition-all"
@@ -197,14 +249,16 @@ export const GameTable: React.FC<GameTableProps> = ({
         {roomState.phase === 'PLAYERS_SELECTING' && (
           <div className="w-full text-center space-y-6">
             {/* Display Clue Banner */}
-            <div className="inline-block bg-slate-950/90 border-2 border-purple-500/40 rounded-2xl px-6 py-4 shadow-2xl max-w-2xl">
-              <span className="block text-[11px] text-purple-400 font-bold uppercase tracking-wider">
-                {t(language, 'clueLabel')}
-              </span>
-              <h3 className="text-xl sm:text-2xl font-black text-pink-300 mt-1">
-                „{roomState.clue}“
-              </h3>
-            </div>
+            {roomState.settings.requireWrittenClue && (
+              <div className="inline-block bg-slate-950/90 border-2 border-purple-500/40 rounded-2xl px-6 py-4 shadow-2xl max-w-2xl">
+                <span className="block text-[11px] text-purple-400 font-bold uppercase tracking-wider">
+                  {t(language, 'clueLabel')}
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-pink-300 mt-1">
+                  „{roomState.clue}“
+                </h3>
+              </div>
+            )}
 
             {!isStoryteller ? (
               <div className="space-y-3">
@@ -218,7 +272,7 @@ export const GameTable: React.FC<GameTableProps> = ({
                     <p className="text-xs font-semibold text-slate-300 mb-3">
                       {t(language, 'selectCardForClue')}
                     </p>
-                    {selectedHandCardId && (
+                    {selectedHandInHand && (
                       <button
                         onClick={handleConfirmPlayerCard}
                         className="px-8 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all"
@@ -248,14 +302,14 @@ export const GameTable: React.FC<GameTableProps> = ({
         {(roomState.phase === 'VOTING' || roomState.phase === 'REVEALING') && (
           <div className="w-full space-y-6">
             {/* Clue Banner */}
-            <div className="text-center">
+            {roomState.settings.requireWrittenClue && <div className="text-center">
               <div className="inline-block bg-slate-950/90 border border-purple-500/40 rounded-2xl px-6 py-3 shadow-xl">
                 <span className="text-[10px] text-purple-400 font-bold uppercase tracking-wider block">
                   {t(language, 'clueLabel')}
                 </span>
                 <span className="text-lg font-black text-pink-300">„{roomState.clue}“</span>
               </div>
-            </div>
+            </div>}
 
             {/* Revealed Anonymous Cards Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 justify-items-center">
@@ -280,10 +334,12 @@ export const GameTable: React.FC<GameTableProps> = ({
                     }`}
                   >
                     <img
-                      src={revCard.url}
+                      src={revCard.thumbnailUrl || revCard.url}
                       alt="Revealed card"
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      onError={(e) => handleImgError(e, revCard.cardId)}
+                      className="w-full h-full object-cover bg-slate-800"
                     />
 
                     {/* Preview button on card hover */}
@@ -322,7 +378,7 @@ export const GameTable: React.FC<GameTableProps> = ({
                     <span>{t(language, 'voteConfirmed')}</span>
                   </div>
                 ) : (
-                  selectedVoteCardId && (
+                  selectedVoteValid && (
                     <button
                       onClick={handleConfirmVote}
                       className="px-8 py-3 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs rounded-2xl shadow-xl transition-all"
@@ -412,7 +468,9 @@ export const GameTable: React.FC<GameTableProps> = ({
                   src={card.thumbnailUrl || card.url}
                   alt="Hand card"
                   referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  onError={(e) => handleImgError(e, card.id)}
+                  className="w-full h-full object-cover bg-slate-800"
                 />
 
                 {/* Card zoom icon */}
@@ -446,10 +504,22 @@ export const GameTable: React.FC<GameTableProps> = ({
               src={previewCard.url}
               alt="Preview card"
               referrerPolicy="no-referrer"
-              className="max-h-[70vh] rounded-2xl object-contain shadow-xl"
+              onError={(e) => handleImgError(e, previewCard.id)}
+              className="max-h-[70vh] rounded-2xl object-contain shadow-xl bg-slate-800"
             />
           </div>
         </div>
+      )}
+
+      {showSettingsModal && (
+        <RoomSettingsModal
+          language={language}
+          settings={localSettings}
+          onChange={setLocalSettings}
+          onCancel={() => setShowSettingsModal(false)}
+          onSave={handleSaveSettings}
+          lockPlayerSetup
+        />
       )}
     </div>
   );

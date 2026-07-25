@@ -13,11 +13,30 @@ service cloud.firestore {
       return signedIn() &&
         request.auth.uid == get(/databases/$(database)/documents/rooms/$(code)).data.hostPlayerId;
     }
+    function playerJoiningSelf() {
+      return signedIn() &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['players', 'memberUids', 'updatedAt']) &&
+        request.auth.uid in request.resource.data.memberUids &&
+        !(request.auth.uid in resource.data.memberUids) &&
+        request.resource.data.players.size() == resource.data.players.size() + 1 &&
+        request.resource.data.memberUids.size() == resource.data.memberUids.size() + 1;
+    }
+    function playerCreatingOwnEmptyView(uid) {
+      return signedIn() &&
+        request.auth.uid == uid &&
+        request.resource.data.keys().hasOnly([
+          'playerId', 'hand', 'selectedCardId', 'confirmedSubmission',
+          'selectedVoteCardId', 'confirmedVote', 'reconnectToken'
+        ]) &&
+        request.resource.data.playerId == request.auth.uid &&
+        request.resource.data.hand.size() == 0;
+    }
 
     match /rooms/{code} {
       allow read: if signedIn();
       allow create: if signedIn() && request.resource.data.hostPlayerId == request.auth.uid;
-      allow update, delete: if signedIn() && resource.data.hostPlayerId == request.auth.uid;
+      allow update: if signedIn() && (resource.data.hostPlayerId == request.auth.uid || playerJoiningSelf());
+      allow delete: if signedIn() && resource.data.hostPlayerId == request.auth.uid;
 
       match /state/{docId} {
         allow read, write: if hostOf(code);
@@ -25,7 +44,8 @@ service cloud.firestore {
 
       match /views/{uid} {
         allow read: if signedIn() && (request.auth.uid == uid || hostOf(code));
-        allow write: if hostOf(code);
+        allow create: if hostOf(code) || playerCreatingOwnEmptyView(uid);
+        allow update, delete: if hostOf(code);
       }
 
       match /actions/{actionId} {

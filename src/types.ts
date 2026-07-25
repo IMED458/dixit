@@ -54,6 +54,7 @@ export interface RoomSettings {
   threePlayerVariant: boolean;
   publicRoom: boolean;
   allowSpectators: boolean;
+  requireWrittenClue: boolean;
   imageProvider: 'curated' | 'all' | 'ai';
 }
 
@@ -177,6 +178,7 @@ export type ClientToServerAction =
   | { type: 'LEAVE_ROOM' }
   | { type: 'TOGGLE_READY' }
   | { type: 'UPDATE_SETTINGS'; settings: Partial<RoomSettings> }
+  | { type: 'UPDATE_PROFILE'; displayName: string; avatarUrl: string }
   | { type: 'START_GAME' }
   | { type: 'SUBMIT_CLUE_AND_CARD'; clue: string; cardId: string }
   | { type: 'SUBMIT_PLAYER_CARD'; cardId: string }

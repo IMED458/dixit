@@ -106,6 +106,10 @@ export default function App() {
     sendAction({ type: 'UPDATE_SETTINGS', settings });
   };
 
+  const handleUpdateProfile = (displayName: string, avatarUrl: string) => {
+    sendAction({ type: 'UPDATE_PROFILE', displayName, avatarUrl });
+  };
+
   const handleSubmitClueAndCard = (clue: string, cardId: string) => {
     sendAction({ type: 'SUBMIT_CLUE_AND_CARD', clue, cardId });
   };
@@ -186,6 +190,7 @@ export default function App() {
             onToggleReady={handleToggleReady}
             onStartGame={handleStartGame}
             onUpdateSettings={handleUpdateSettings}
+            onUpdateProfile={handleUpdateProfile}
             onSendChat={handleSendChat}
             onSendReaction={handleSendReaction}
             chatMessages={chatMessages}
@@ -205,6 +210,7 @@ export default function App() {
             onSubmitClueAndCard={handleSubmitClueAndCard}
             onSubmitPlayerCard={handleSubmitPlayerCard}
             onSubmitVote={handleSubmitVote}
+            onUpdateSettings={handleUpdateSettings}
             onSendReaction={handleSendReaction}
           />
         )}

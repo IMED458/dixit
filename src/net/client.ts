@@ -15,13 +15,14 @@
  */
 import {
   addDoc, collection, deleteDoc, doc, getDoc, onSnapshot, orderBy, query,
-  serverTimestamp, setDoc, Firestore, Unsubscribe,
+  runTransaction, serverTimestamp, setDoc, Firestore, Unsubscribe,
 } from 'firebase/firestore';
 import { Auth, onAuthStateChanged, signInAnonymously } from 'firebase/auth';
 import { db as defaultDb, auth as defaultAuth } from '../firebase';
 import { DixitRoom, genCode } from '../game/room';
 import {
   ChatMessage, ClientToServerAction, FloatingReaction, PrivatePlayerState, PublicGameState,
+  Player,
 } from '../types';
 
 const clean = <T>(v: T): T => JSON.parse(JSON.stringify(v));
@@ -60,6 +61,7 @@ export class DixitClient {
 
   private lastPublic: PublicGameState | null = null;
   private lastPrivate: PrivatePlayerState | null = null;
+  private optimisticPlayer: Player | null = null;
 
   constructor(cb: DixitCallbacks, ctx?: FbCtx) {
     this.cb = cb;
@@ -128,6 +130,7 @@ export class DixitClient {
     if (!already && (pub.players || []).length >= pub.settings.maxPlayers) return this.cb.onError('ოთახი სავსეა (Room is full)');
     this.teardown();
     this.code = code;
+    await this.optimisticJoin(code, pub, displayName, avatarUrl).catch(() => {});
     this.subscribe(code);
     await this.sendAction('JOIN', { displayName, avatarUrl });
     await this.maybeBecomeHost(pub.hostPlayerId);
@@ -162,7 +165,14 @@ export class DixitClient {
     this.subscribedAt = Date.now();
     this.roomUnsubs.push(onSnapshot(this.roomRef(code), (snap) => {
       if (!snap.exists()) return;
-      this.lastPublic = snap.data() as PublicGameState;
+      const incoming = snap.data() as PublicGameState;
+      const players = incoming.players || [];
+      if (this.optimisticPlayer && !players.some((p) => p.id === this.uid)) {
+        this.lastPublic = { ...incoming, players: [...players, this.optimisticPlayer] };
+      } else {
+        if (players.some((p) => p.id === this.uid)) this.optimisticPlayer = null;
+        this.lastPublic = incoming;
+      }
       void this.maybeBecomeHost((snap.data() as any).hostPlayerId);
       this.emitRoom();
     }));
@@ -205,6 +215,74 @@ export class DixitClient {
       playerId: this.uid, playerName: me?.displayName || '', emoji, timestamp: Date.now(),
     };
     await addDoc(this.reactionsCol(), clean(r));
+  }
+
+  private async optimisticJoin(code: string, pub: any, displayName: string, avatarUrl: string) {
+    const optimisticPlayer: Player = {
+      id: this.uid,
+      displayName: displayName || `მოთამაშე ${(pub.players || []).length + 1}`,
+      avatarUrl: avatarUrl || '🌟',
+      isHost: false,
+      isReady: false,
+      isConnected: true,
+      isSpectator: pub.phase !== 'LOBBY',
+      seatNumber: (pub.players || []).length + 1,
+      score: 0,
+      reconnectToken: this.uid,
+      joinedAt: Date.now(),
+    };
+    const privateView: PrivatePlayerState = {
+      playerId: this.uid,
+      hand: [],
+      selectedCardId: null,
+      confirmedSubmission: false,
+      selectedVoteCardId: null,
+      confirmedVote: false,
+      reconnectToken: this.uid,
+    };
+    this.optimisticPlayer = optimisticPlayer;
+    this.lastPublic = {
+      ...(pub as PublicGameState),
+      players: (pub.players || []).some((p: Player) => p.id === this.uid)
+        ? (pub.players || []).map((p: Player) => p.id === this.uid ? { ...p, isConnected: true } : p)
+        : [...(pub.players || []), optimisticPlayer],
+    };
+    this.lastPrivate = privateView;
+    this.emitRoom();
+
+    await runTransaction(this.db, async (tx) => {
+      const ref = this.roomRef(code);
+      const snap = await tx.get(ref);
+      if (!snap.exists() || (snap.data() as any)._deleted) return;
+      const latest = snap.data() as any;
+      const players = latest.players || [];
+      const existing = players.find((p: Player) => p.id === this.uid);
+      if (existing) {
+        existing.isConnected = true;
+        existing.displayName = displayName || existing.displayName;
+        existing.avatarUrl = avatarUrl || existing.avatarUrl;
+      } else {
+        if (players.length >= latest.settings.maxPlayers) return;
+        players.push({ ...optimisticPlayer, isSpectator: latest.phase !== 'LOBBY', seatNumber: players.length + 1 });
+      }
+      tx.update(ref, {
+        players,
+        memberUids: players.map((p: Player) => p.id),
+        updatedAt: Date.now(),
+      });
+    });
+
+    await setDoc(this.viewRef(this.uid, code), clean(privateView), { merge: true });
+    const alreadyLocal = (pub.players || []).some((p: Player) => p.id === this.uid);
+    if (!alreadyLocal) this.optimisticPlayer = null;
+    this.lastPublic = {
+      ...(pub as PublicGameState),
+      players: alreadyLocal
+        ? (pub.players || []).map((p: Player) => p.id === this.uid ? { ...p, isConnected: true } : p)
+        : [...(pub.players || []), optimisticPlayer],
+    };
+    this.lastPrivate = privateView;
+    this.emitRoom();
   }
 
   // ---- actions queue ----
@@ -251,6 +329,7 @@ export class DixitClient {
       case 'LEAVE_ROOM': res = eng.leave(uid); break;
       case 'TOGGLE_READY': res = eng.toggleReady(uid); break;
       case 'UPDATE_SETTINGS': res = eng.updateSettings(uid, p.settings); break;
+      case 'UPDATE_PROFILE': res = eng.updateProfile(uid, p.displayName, p.avatarUrl); break;
       case 'START_GAME': res = eng.startGame(uid); break;
       case 'SUBMIT_CLUE_AND_CARD': res = eng.submitClueAndCard(uid, p.clue, p.cardId); break;
       case 'SUBMIT_PLAYER_CARD': res = eng.submitPlayerCard(uid, p.cardId); break;
@@ -307,5 +386,6 @@ export class DixitClient {
     this.code = null;
     this.lastPublic = null;
     this.lastPrivate = null;
+    this.optimisticPlayer = null;
   }
 }

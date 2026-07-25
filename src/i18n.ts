@@ -44,6 +44,7 @@ export const i18n = {
     send: 'გაგზავნა',
     typeMessage: 'ჩაწერთ შეტყობინება...',
     reactions: 'რეაქციები',
+    saveProfile: 'შენახვა',
     
     // Game phases
     phaseLobby: 'ლობი',
@@ -106,6 +107,8 @@ export const i18n = {
     maxPlayers: 'მაქსიმალური მოთამაშეები',
     threePlayerVariant: '3-მოთამაშიანი სპეც-ვარიანტი (7 ბარათი/2 არჩევანი)',
     publicRoomLabel: 'საჯარო ოთახი',
+    writtenClueLabel: 'მინიშნების ჩაწერა',
+    verbalClueNotice: 'მინიშნება სიტყვიერად თქვით და აირჩიეთ ბარათი.',
     saveSettings: 'პარამეტრების შენახვა',
     
     // Admin
@@ -187,6 +190,7 @@ export const i18n = {
     send: 'Send',
     typeMessage: 'Type a message...',
     reactions: 'Reactions',
+    saveProfile: 'Save',
     
     // Game phases
     phaseLobby: 'Lobby',
@@ -249,6 +253,8 @@ export const i18n = {
     maxPlayers: 'Max Players',
     threePlayerVariant: '3-Player Special Variant (7 cards/2 submissions)',
     publicRoomLabel: 'Public Room',
+    writtenClueLabel: 'Written clue input',
+    verbalClueNotice: 'Say the clue out loud and select a card.',
     saveSettings: 'Save Settings',
     
     // Admin

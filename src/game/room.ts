@@ -56,7 +56,7 @@ export const DEFAULT_SETTINGS: RoomSettings = {
   maxPlayers: 8, winningScore: 30, maxRounds: 10, handSize: 6,
   clueTimer: 60, cardTimer: 60, votingTimer: 45, resultsTimer: 12,
   language: 'ka', threePlayerVariant: false, publicRoom: true,
-  allowSpectators: true, imageProvider: 'all',
+  allowSpectators: true, requireWrittenClue: true, imageProvider: 'all',
 };
 
 export class DixitRoom {
@@ -146,7 +146,24 @@ export class DixitRoom {
 
   updateSettings(uid: string, s: Partial<RoomSettings>): Result {
     const d = this.data;
-    if (d.hostPlayerId === uid && d.phase === 'LOBBY') d.settings = { ...d.settings, ...s };
+    if (d.hostPlayerId !== uid) return {};
+    const next = { ...d.settings, ...s };
+    if (d.phase !== 'LOBBY') {
+      next.maxPlayers = d.settings.maxPlayers;
+      next.handSize = d.settings.handSize;
+      next.threePlayerVariant = d.settings.threePlayerVariant;
+    }
+    d.settings = next;
+    return {};
+  }
+
+  updateProfile(uid: string, displayName: string, avatarUrl: string): Result {
+    const p = this.getPlayer(uid);
+    if (!p || this.data.phase !== 'LOBBY') return {};
+    const nextName = displayName.trim().substring(0, 32);
+    const nextAvatar = avatarUrl.trim().substring(0, 16);
+    if (nextName) p.displayName = nextName;
+    if (nextAvatar) p.avatarUrl = nextAvatar;
     return {};
   }
 
@@ -176,13 +193,15 @@ export class DixitRoom {
     const hand = d.playerHands[uid] || [];
     const cardIndex = hand.findIndex(c => c.id === cardId);
     if (cardIndex === -1) return { error: 'ეს ბარათი არ გაქვთ ხელში!' };
-    d.clue = clue.trim().substring(0, 120) || 'საიდუმლო სიზმარი';
+    const nextClue = clue.trim().substring(0, 120);
+    if (d.settings.requireWrittenClue && !nextClue) return { error: 'ჩაწერეთ მინიშნება' };
+    d.clue = nextClue || 'მინიშნება ითქვა სიტყვიერად';
     d.storytellerCardId = cardId;
     hand.splice(cardIndex, 1);
     d.playerHands[uid] = hand;
     d.submissions = [{ playerId: uid, cardId, isStorytellerCard: true, revealPosition: -1, submittedAt: Date.now(), autoSubmitted: false }];
     this.setPhase('PLAYERS_SELECTING', d.settings.cardTimer);
-    this.say(`მთხრობელმა დაწერა მინიშნება: „${d.clue}“`);
+    this.say(d.settings.requireWrittenClue ? `მთხრობელმა დაწერა მინიშნება: „${d.clue}“` : 'მთხრობელმა აირჩია ბარათი და მინიშნება სიტყვიერად თქვა');
     return {};
   }
 

@@ -25,6 +25,12 @@ import {
 } from '../types';
 
 const clean = <T>(v: T): T => JSON.parse(JSON.stringify(v));
+
+// Safe in Node (tests) where localStorage is absent.
+const ls = typeof localStorage !== 'undefined'
+  ? localStorage
+  : ({ getItem: () => null, setItem: () => {}, removeItem: () => {} } as Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>);
+
 export interface FbCtx { db: Firestore; auth: Auth; }
 
 export interface DixitCallbacks {
@@ -108,7 +114,7 @@ export class DixitClient {
     await this.persist();
     this.startHost();
     this.subscribe(this.code);
-    localStorage.setItem('dreamclue_room', this.code);
+    ls.setItem('dreamclue_room', this.code);
     this.cb.onReconnectSuccess(this.uid, this.code);
   }
 
@@ -125,18 +131,18 @@ export class DixitClient {
     this.subscribe(code);
     await this.sendAction('JOIN', { displayName, avatarUrl });
     await this.maybeBecomeHost(pub.hostPlayerId);
-    localStorage.setItem('dreamclue_room', code);
+    ls.setItem('dreamclue_room', code);
     this.cb.onReconnectSuccess(this.uid, code);
   }
 
   private async reconnect() {
     await this.ensureUid();
-    const code = localStorage.getItem('dreamclue_room');
+    const code = ls.getItem('dreamclue_room');
     if (!code) return;
     const snap = await getDoc(this.roomRef(code));
-    if (!snap.exists() || (snap.data() as any)._deleted) { localStorage.removeItem('dreamclue_room'); return; }
+    if (!snap.exists() || (snap.data() as any)._deleted) { ls.removeItem('dreamclue_room'); return; }
     const pub = snap.data() as any;
-    if (!(pub.players || []).some((p: any) => p.id === this.uid)) { localStorage.removeItem('dreamclue_room'); return; }
+    if (!(pub.players || []).some((p: any) => p.id === this.uid)) { ls.removeItem('dreamclue_room'); return; }
     this.teardown();
     this.code = code;
     this.subscribe(code);
@@ -147,7 +153,7 @@ export class DixitClient {
 
   private async leave() {
     if (this.code) await this.sendAction('LEAVE_ROOM', {}).catch(() => {});
-    localStorage.removeItem('dreamclue_room');
+    ls.removeItem('dreamclue_room');
     this.teardown();
   }
 

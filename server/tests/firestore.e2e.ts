@@ -57,12 +57,14 @@ async function main() {
   const code = a.code!;
 
   b.client.send({ type: 'JOIN_ROOM', roomCode: code, displayName: 'ბექა', avatarUrl: '🌟' });
+  await new Promise(r => setTimeout(r, 500));
   c.client.send({ type: 'JOIN_ROOM', roomCode: code, displayName: 'ცისკო', avatarUrl: '🦊' });
-  await waitFor(() => (a.pub?.players.length ?? 0) === 3 && !!b.pub && !!c.pub);
-  assert(a.pub!.players.length === 3, 'სამი მოთამაშე შემოვიდა (JOIN → host → views)');
+  await waitFor(() => (a.pub?.players.length ?? 0) === 3 && !!b.pub && !!c.pub, 20000);
+  assert((a.pub?.players.length ?? 0) === 3, 'სამი მოთამაშე შემოვიდა (JOIN → host → views)');
+  if ((a.pub?.players.length ?? 0) !== 3) { console.log(`\n=== DIXIT FIRESTORE E2E: ${pass} Passed, ${fail} Failed (join არ დასრულდა) ===`); process.exit(1); }
 
   a.client.send({ type: 'START_GAME' });
-  await waitFor(() => a.pub!.phase === 'STORYTELLER_SELECTING' && (a.priv!.hand.length > 0));
+  await waitFor(() => a.pub!.phase === 'STORYTELLER_SELECTING' && [a, b, c].every(s => (s.priv?.hand.length ?? 0) === a.pub!.settings.handSize));
   assert(a.pub!.phase === 'STORYTELLER_SELECTING', 'თამაში დაიწყო');
   assert([a, b, c].every(s => (s.priv?.hand.length ?? 0) === a.pub!.settings.handSize), 'თითო მოთამაშეს დაურიგდა ხელი (privacy view)');
 
@@ -78,8 +80,10 @@ async function main() {
   const reveal = a.pub!.revealedCards || [];
   assert(reveal.length === 3 && reveal.every((r: any) => r.ownerPlayerId === undefined), 'გამოვლენილი ბარათები ანონიმურია (privacy)');
 
-  [a, b, c].filter(s => s !== stSeat).forEach(s => {
-    const mine = a.pub!.submittedPlayerIds; void mine;
+  const voters = [a, b, c].filter(s => s !== stSeat);
+  // Wait until each voter's private view reflects their own submitted card.
+  await waitFor(() => voters.every(s => !!s.priv!.selectedCardId));
+  voters.forEach(s => {
     const target = reveal.find((rc) => rc.cardId !== s.priv!.selectedCardId);
     if (target) s.client.send({ type: 'SUBMIT_VOTE', cardId: target.cardId });
   });
